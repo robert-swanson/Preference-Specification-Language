@@ -1,0 +1,76 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2578
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;\red253\green128\blue8;\red0\green0\blue255;\red251\green2\blue7;
+\red0\green0\blue255;\red0\green0\blue0;\red127\green127\blue127;\red127\green127\blue127;\red251\green2\blue7;
+}
+{\*\expandedcolortbl;;\cssrgb\c100000\c57637\c0;\cssrgb\c1680\c19835\c100000;\cssrgb\c100000\c14913\c0;
+\cssrgb\c1680\c19835\c100000;\cssrgb\c0\c0\c0;\cssrgb\c57046\c57047\c57046;\cssrgb\c57046\c57047\c57046;\cssrgb\c100000\c14913\c0;
+}
+\margl1440\margr1440\vieww28600\viewh16380\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs48 \cf2 definitions\cf0 :\
+	\cf3 priority\cf0  \cf4 strongly\cf0 		10.\
+	\cf3 priority\cf0  \cf4 moderately\cf0 	5.\
+	\cf3 priority\cf0  \cf4 slightly\cf0 		1.\
+\
+\
+\cf2 computerScienceBSRequirements\cf0 :\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf0 	\cf3 require\cf0  \'93COS 102\'94.\
+	\cf3 require\cf0  \'93COS 103\'94.\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf0 	\cf3 require\cf0  \'93COS 120\'94.\
+	\cf3 require\cf0  \'93COS 121\'94.\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf0 	\cf5 require\cf0  \'93COS 143\'94.\
+	\cf5 require\cf0  \'93COS 232\'94.\
+	\cf5 require\cf0  \'93COS 243\'94.\
+	\cf5 require\cf0  \'93COS 265\'94.\
+	\cf5 require\cf0  \'93COS 284\'94.\
+	\cf5 require\cf0  \'93COS 310\'94.\
+	\cf5 require\cf0  \'93COS 320\'94.\
+	\cf5 require\cf0  \'93COS 382\'94.\
+	\cf5 require\cf0  \'93COS 435\'94.\
+	\cf5 require\cf0  \'93COS 452\'94.\
+	\cf5 require\cf0  \'93COS 453\'94.\
+	\cf5 require\cf0  \'93COS 493\'94.\
+	\cf5 require\cf0  \'93MAT 151\'94.\
+	\cf5 require\cf0  \'93MAT 215\'94.\
+\
+	\cf5 require \cf6 1 \cf3 of\cf6  \'93COS 311\'94, \'93COS 321\'94.\
+	\cf5 require\cf6  2 \cf3 of\cf6  \'93COS 381\'94, \'93COS 421\'94, \'93COS 436\'94.\
+	\cf5 require \cf6 1 \cf5 of\cf6  \'93MAT 210\'94, \'93MAT 352\'94.\
+\
+	require 128 hours\
+	require 42 upper \
+\
+studentPreferences:\
+	prefer strongly \'93COS 121\'94.\
+	prefer moderately earlier classes\
+	\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+	\cf3 condition\cf6  \cf4 csElectiveRequirement\cf6 (\cf4 localContext, globalContext\cf6 ) \{  \cf7 // Python syntax, must return boolean\cf6 \
+		return \cf4 localContext\cf6 .credits >= 80 localContext.classes \
+	\}\
+\
+	\cf3 fulfilment\cf6  csElectiveRequirement(\cf4 class\cf6 ) \{    \cf8 // Must return boolean\cf6 \
+		mathClasses = [\'93MAT 230\'94, \'93MAT 240\'94, \'93MAT 245\'94, \'93MAT 251\'94, \'93MAT 310\'94] \
+		return \cf4 class\cf6 .department == \'93COS\'94\
+	\}\
+\
+	require condition \cf9 csElectiveRequirement met by \cf5 fulfilment\cf6  csElectiveRequirement\
+	\cf0 \
+\
+\
+}

@@ -26,7 +26,7 @@ Authors
 <!-- Note: wrapping table in div.noheader will hide the table's header -->
 <!-- Note: wrapping table in div.firstcol will style the first column different from other columns -->
 <div class="noheader firstcol">
-                  |             
+  1              | 2
 ------------------|-------------
 names             | Rob Swanson & Liz Yeiter
 computer + OS     | macbook
@@ -41,29 +41,44 @@ Project Selection
 =================
 Define the Domain
 ------------------
-
+College course reccomendation based off of degree requirements and student preferences.
+The end goal is to make a language that can specify user preferences for Envisage.
 
 <!--(What is the purpose of the language?) -->
-Define the Problem   
+Define the Problem
 ------------------
+How does the user express the requirements of their degree and their personal preferences to the planning engine?
 
 
 <!-- Create example "solutions". What is the expected output for some examples of valid input? -->
-Expected Output 
+Expected Solutions
 ------------------
+The input would be a `.cps` file that specifies user preferences and degree requirements in a human readable format.
 
+~~~~
+example input
+~~~~
+
+The output would be a python file which includes a python function for each requirement which takes in the context of a plan and returns some value corresponding to that requirement's satisfaction.
+Other possible outputs could be a prolog fact file or a json document.
+This output file would probably not be of much use to the user without other tools to create or pass in plans.
+
+~~~~
+example output
+~~~~
 
 <!-- Define functionality. How is the output determined for a given input? -->
-Define Functionality 
+Define Functionality
 ------------------
-
+The user would import/include relevant degree requirements into their preference document.
+They would then run the file through the parser which would then produce the python file output.
 
 <!-- Talk with the professor, and get approval. -->
-Approval 
+Approval
 ------------------
 
 
-Splitting Up the Work 
+Splitting Up the Work
 ------------------
 
 Grammar
@@ -77,7 +92,7 @@ grammar
 Testing the Grammar
 ------------------
 
-Splitting Up the Work 
+Splitting Up the Work
 ------------------
 
 Parser
@@ -91,7 +106,7 @@ parser
 Testing the Parser
 ------------------
 
-Splitting Up the Work 
+Splitting Up the Work
 ------------------
 
 Translator
@@ -105,14 +120,14 @@ translator
 Testing the Translator
 ------------------
 
-Splitting Up the Work 
+Splitting Up the Work
 ------------------
 
 Documentation
 ======================
 
 
-Splitting Up the Work 
+Splitting Up the Work
 ------------------
 
 Reflection
