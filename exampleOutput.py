@@ -20,20 +20,20 @@ def isValidPlan(plan):
         leftBeforeRight(plan, "COS 120", "COS 121")
     )
 
-score = 0
 def planScore(plan):
     totalScore = 0
     maxScore = 0
 
-    score += STRONGLY * courseNameInPlan(plan, "COS 121")
-    (score, maxScore) = applyPreference(totalScore, maxScore, percentage, STRONGLY, courseNameInPlan(plan, "COS 121"))
-    (score, maxScore) = applyPreference(totalScore, maxScore, sigmoid, MODERATLY, averageMeetingTime(plan))
+    totalScore += STRONGLY * courseNameInPlan(plan, "COS 121")
+    (totalScore, maxScore) = applyPreference(totalScore, maxScore, percentage, STRONGLY, courseNameInPlan(plan, "COS 121"))
+    (totalScore, maxScore) = applyPreference(totalScore, maxScore, sigmoid, MODERATLY, averageMeetingTime(plan))
 
     if courseNameInPlan("COS 436"):
-        (score, maxScore) = applyPreference(totalScore, maxScore, percentage, SLIGHTLY, courseNameInPlan(plan, "COS 381"))
-        (score, maxScore) = applyPreference(totalScore, maxScore, percentage, SLIGHTLY, not courseNameInPlan(plan, "COS 421"))
+        (totalScore, maxScore) = applyPreference(totalScore, maxScore, percentage, SLIGHTLY, courseNameInPlan(plan, "COS 381"))
+        (totalScore, maxScore) = applyPreference(totalScore, maxScore, percentage, SLIGHTLY, not courseNameInPlan(plan, "COS 421"))
 
     if courseNameInPlan("COS 381"):
         semesterContext = contextFromSemester(plan, plan.courses["COS 381"].semseter)
-        
-        (score, maxScore) = applyPreference(totalScore, maxScore, reverseSigmoid, MODERATLY, credits(semesterContext))
+        (totalScore, maxScore) = applyPreference(totalScore, maxScore, reverseSigmoid, MODERATLY, credits(semesterContext))
+
+    return totalScore/maxScore

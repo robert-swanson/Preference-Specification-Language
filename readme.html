@@ -54,24 +54,159 @@ How does the user express the requirements of their degree and their personal pr
 Expected Solutions
 ------------------
 The input would be a `.cps` file that specifies user preferences and degree requirements in a human readable format.
+For example, the following file describes a few requirements and then specifies a few user preferences
+~~~~
+definitions:
+	priority strongly 10.
+	priority moderately 5.
+	priority slightly 1.
 
+computerScienceBSRequirements:
+	require "COS 102".
+	require "COS 103".
+	require "COS 120".
+	require "COS 121".
+
+	require 1 of "COS 311", "COS 321".
+	require 2 of "COS 381", "COS 421", "COS 436".
+
+	require 128 hours.
+	require 42 upper devision hours.
+
+	require taking "COS 120" before "COS 121".
+
+studentPreferences:
+	prefer strongly "COS 121".
+	prefer moderately later classes.
+
+	if taking "COS 436" then {
+		prefer slightly "COS 381".
+		prefer slightly not taking "COS 421".
+	}
+
+	when taking "COS 381" {
+		prefer moderately fewer credits.
+	}
 ~~~~
-example input
-~~~~
+[Example `input.cps`]
 
 The output would be a python file which includes a python function for each requirement which takes in the context of a plan and returns some value corresponding to that requirement's satisfaction.
 Other possible outputs could be a prolog fact file or a json document.
 This output file would probably not be of much use to the user without other tools to create or pass in plans.
 
-~~~~
-example output
-~~~~
+~~~~ Python
+import helpers
 
+STRONGLY = 10
+MODERATLY = 5
+SLIGHTLY = 1
+
+def isValidPlan(plan):
+    return (
+        courseNameInPlan(plan, "COS 102") and
+        courseNameInPlan(plan, "COS 103") and
+        courseNameInPlan(plan, "COS 120") and
+        courseNameInPlan(plan, "COS 121") and
+
+        nCourseNamesInPlan(plan, 1, ["COS 311", "COS 321"]) and
+        nCourseNamesInPlan(plan, 2, ["COS 381", "COS 421", "COS 436"]) and
+
+        credits() >= 128 and
+        creditsOver(plan, 300) >= 42 and
+
+        leftBeforeRight(plan, "COS 120", "COS 121")
+    )
+
+def planScore(plan):
+    totalScore = 0
+    maxScore = 0
+
+    totalScore += STRONGLY * courseNameInPlan(plan, "COS 121")
+    (totalScore, maxScore) = applyPreference(totalScore, maxScore, percentage, STRONGLY, courseNameInPlan(plan, "COS 121"))
+    (totalScore, maxScore) = applyPreference(totalScore, maxScore, sigmoid, MODERATLY, averageMeetingTime(plan))
+
+    if courseNameInPlan("COS 436"):
+        (totalScore, maxScore) = applyPreference(totalScore, maxScore, percentage, SLIGHTLY, courseNameInPlan(plan, "COS 381"))
+        (totalScore, maxScore) = applyPreference(totalScore, maxScore, percentage, SLIGHTLY, not courseNameInPlan(plan, "COS 421"))
+
+    if courseNameInPlan("COS 381"):
+        semesterContext = contextFromSemester(plan, plan.courses["COS 381"].semseter)
+        (totalScore, maxScore) = applyPreference(totalScore, maxScore, reverseSigmoid, MODERATLY, credits(semesterContext))
+
+    return totalScore/maxScore
+
+~~~~
+[Example `output.py`]
+The compiler could create a python file like this, which could take in a python object (which could be provided and decoded from JSON) and can specify whether the plan is valid, and also the level to which the user preferences are met.
+This file includes the `helpers.py` file which **is not generated** and provides basic functionality that supports preference and requiremnt validation.
+
+~~~~
+def courseNameInPlan(context, courseName):
+    return context.courses.contains(courseName)
+
+def nCourseNamesInPlan(context, n, fromCourseNames):
+    count = 0
+    for courseName in fromCourseNames:
+        if courseNameInPlan(context, courseName):
+            count += 1
+            if count >= n:
+                return true
+    return false
+
+def leftBeforeRight(context, leftCourseName, rightCourseName):
+    if courseNameInPlan(leftCourseName) and courseNameInPlan(rightCourseName):
+        return context.courses[leftCourseName].semseter < context.courses[rightCourseName].semseter
+
+EARLIEST_MEETING_TIME = 800
+LATEST_MEETING_TIME = 1500
+
+def averageMeetingTime(context):
+    timeSum = 0
+    for meeting in context.meetings:
+        timeSum += (meeting.time - EARLIEST_MEETING_TIME) / (LATEST_MEETING_TIME - EARLIEST_MEETING_TIME)
+    return timeSum / len(context.meetings)
+
+def credits(context):
+    creditSum = 0
+    for meeting in context.meetings:
+        creditSum += meeting.credits
+    return creditSum
+
+def creditsOver(context, minCourseNumber):
+    creditSum = 0
+    for meeting in context.meetings:
+        if meeting.courseNumber >= minCourseNumber:
+            creditSum += meeting.credits
+    return creditSum
+
+def applyPreference(totalScore, maxScore, scaler, weight, score):
+    return (totalScore+weight*scaler(preferenceSatisfaction), maxScore+weight)
+
+def percentage(score):
+    return min(max(score, 1), 0) * weight
+
+def sigmoid(score):
+    return weight/(1+10**(-score))
+def reverseSigmoid(score):
+    return weight/(1+10**(score))
+
+def contextFromSemester(contextIn, semester):
+    contextOut = { courses: [], meetings: [] }
+    for meeting in contextIn.meeting:
+        if meeting.semester == semester:
+            contextOut.courses.append(meeting.course)
+            contextOut.meetings.append(meeting)
+~~~~
+[helpers.py]
 <!-- Define functionality. How is the output determined for a given input? -->
 Define Functionality
 ------------------
-The user would import/include relevant degree requirements into their preference document.
-They would then run the file through the parser which would then produce the python file output.
+A person making use of this system would start by creating a `.cps` input file that follows the language specification to define the requirements of their degrees (possibly by importing from other files).
+They would then run the compiler which would produce a python file with two functions:
+1. `isValidPlan(plan)` which returns a boolean
+2. `planScore(plan)` which returns a double between 0 and 1, with 1 being the highest possible score, which can only be achived when all applied preferences are fully met (which is not possible for preferences which use a sigmoid function).
+The user could populate a python object however they wish, but would likely do so by specifying a canidate plan in json, and then decoding it.
+They could then pass this object to either function to evaluate it.
 
 <!-- Talk with the professor, and get approval. -->
 Approval
