@@ -41,13 +41,14 @@ Project Selection
 =================
 Define the Domain
 ------------------
-College course reccomendation based off of degree requirements and student preferences.
+College course recomendation based off of degree requirements and student preferences.
 The end goal is to make a language that can specify user preferences for Envisage.
 
 <!--(What is the purpose of the language?) -->
 Define the Problem
 ------------------
 How does the user express the requirements of their degree and their personal preferences to the planning engine?
+There is a lot to think about when creating a plan, and it can be overwhelming to have to do it all by hand, which is what this language
 
 
 <!-- Create example "solutions". What is the expected output for some examples of valid input? -->
@@ -205,16 +206,33 @@ A person making use of this system would start by creating a `.cps` input file t
 They would then run the compiler which would produce a python file with two functions:
 1. `isValidPlan(plan)` which returns a boolean
 2. `planScore(plan)` which returns a double between 0 and 1, with 1 being the highest possible score, which can only be achived when all applied preferences are fully met (which is not possible for preferences which use a sigmoid function).
-The user could populate a python object however they wish, but would likely do so by specifying a canidate plan in json, and then decoding it.
+The user could populate a python object however they wish, but would likely do so by specifying a candidate plan in json, and then decoding it.
 They could then pass this object to either function to evaluate it.
 
 <!-- Talk with the professor, and get approval. -->
 Approval
 ------------------
+We talked to Dr. Denning about the difference between syntactic and semantic analysis and added a few types of symantic errors that we will check including
+
+1. Verify counts for things such as `require 7 of "COS 381", "COS 421", "COS 436".`
+2. Ensure that there are no prerequisite cycles.
+~~~~
+require "A" before "B".
+require "B" before "A".
+~~~~
+3. Identify preference/requirement conflicts when two constrain the same thing differently, for example
+~~~~
+	require "COS 121".
+	require not "COS 121".
+	prefer moderately "COS 121".
+~~~~
 
 
 Splitting Up the Work
 ------------------
+Rob made example input and output, and contributed to the readme.
+
+Liz made the template README and filled out initial stuff and discussed semantic vs syntactic examples.
 
 Grammar
 ================
