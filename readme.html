@@ -48,7 +48,7 @@ The end goal is to make a language that can specify user preferences for Envisag
 Define the Problem
 ------------------
 How does the user express the requirements of their degree and their personal preferences to the planning engine?
-There is a lot to think about when creating a plan, and it can be overwhelming to have to do it all by hand, which is what this language
+There is a lot to think about when creating a plan, and all the moving parts can be overwhelming, which is what this language will strive to help.
 
 
 <!-- Create example "solutions". What is the expected output for some examples of valid input? -->
@@ -91,7 +91,7 @@ studentPreferences:
 ~~~~
 [Example `input.cps`]
 
-The output would be a python file which includes a python function for each requirement which takes in the context of a plan and returns some value corresponding to that requirement's satisfaction.
+The output would be a python file which includes a python function for each requirement, which takes in the context of a plan and returns some value corresponding to that requirement's satisfaction.
 Other possible outputs could be a prolog fact file or a json document.
 This output file would probably not be of much use to the user without other tools to create or pass in plans.
 
@@ -199,6 +199,7 @@ def contextFromSemester(contextIn, semester):
             contextOut.meetings.append(meeting)
 ~~~~
 [helpers.py]
+
 <!-- Define functionality. How is the output determined for a given input? -->
 Define Functionality
 ------------------
