@@ -10,20 +10,32 @@ statement: require
     | if
     | when;
 
-priority: 'priority' NAME NUM '.';
-require: 'require' constraint '.';
-prefer: 'prefer' NAME constraint '.';
+priority: PRIORITY NAME NUM PERIOD;
+require: REQUIRE constraint PERIOD;
+prefer: PREFER NAME constraint PERIOD;
 
-if: 'if' condition 'then' body elif* else?;
-elif: 'elif' condition 'then' body;
-else: 'else' body;
+if: IF condition THEN body elif* else?;
+elif: ELIF condition THEN body;
+else: ELSE body;
 
-when: 'when' condition body;
+when: WHEN condition body;
 
-condition: 'taking' NAME;
+condition: TAKING NAME;
 constraint: NAME+
     | NUM NAME+
-    | NUM 'of' (NAME ',')* NAME;
+    | NUM OF (NAME ',')* NAME;
 
+
+PRIORITY: 'priority';
+REQUIRE: 'require';
+PREFER: 'prefer';
+IF: 'if';
+THEN: 'then';
+ELIF: 'elif';
+ELSE: 'else';
+TAKING: 'taking';
+WHEN: 'when';
+OF: 'of';
+PERIOD: '.';
 NUM: [0-9]+;
 NAME: [a-zA-Z](-|_|[a-zA-Z0-9])*;
