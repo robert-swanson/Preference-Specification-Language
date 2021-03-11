@@ -14,7 +14,7 @@ computerScienceBSRequirements {
 	require 2 of COS-381, COS-421, COS-436.
 
 	require 128 hours.
-	require 42 upper devision hours.
+	require 42 upper division credits.
 
 	require taking COS-120 before COS-121.
 }
@@ -31,7 +31,7 @@ studentPreferences {
 	}
 
 	when taking COS-381 {
-		prefer moderately fewer credits.
+		prefer moderately less credits.
 	}
 
 	require COS-121.
