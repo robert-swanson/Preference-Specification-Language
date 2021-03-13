@@ -7,23 +7,24 @@ body: '{' statement+ '}';
 statement: require
     | priority
     | prefer
-    | if
+    | if_
     | when;
 
 priority: PRIORITY NAME NUM PERIOD;
 require: REQUIRE constraint PERIOD;
 prefer: PREFER NAME constraint PERIOD;
 
-if: IF condition THEN body elif* else?;
+if_: IF condition THEN body elif* else_?;
 elif: ELIF condition THEN body;
-else: ELSE body;
+else_: ELSE body;
 
 when: WHEN condition body;
 
 condition: TAKING NAME
     | NOT condition // not
-    | '(' condition AND condition ')'
-    | '(' condition OR condition ')'
+    | OPENPAREND condition AND condition CLOSEPAREND
+    | OPENPAREND condition OR condition CLOSEPAREND
+    | OPENPAREND condition CLOSEPAREND
     ;
 
 constraint:
@@ -88,6 +89,8 @@ NOT: 'not';
 
 // Atoms
 PERIOD: '.';
+OPENPAREND: '(';
+CLOSEPAREND: ')';
 NUM: [0-9]+;
 NAME: [a-zA-Z]('-'|'_'|[a-zA-Z0-9])*;
 
