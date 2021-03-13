@@ -58,17 +58,17 @@ public interface PSLGrammarVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitIf_(PSLGrammarParser.If_Context ctx);
 	/**
-	 * Visit a parse tree produced by {@link PSLGrammarParser#elif}.
+	 * Visit a parse tree produced by {@link PSLGrammarParser#otherwiseIf}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitElif(PSLGrammarParser.ElifContext ctx);
+	T visitOtherwiseIf(PSLGrammarParser.OtherwiseIfContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link PSLGrammarParser#else_}.
+	 * Visit a parse tree produced by {@link PSLGrammarParser#otherwise}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitElse_(PSLGrammarParser.Else_Context ctx);
+	T visitOtherwise(PSLGrammarParser.OtherwiseContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link PSLGrammarParser#when}.
 	 * @param ctx the parse tree

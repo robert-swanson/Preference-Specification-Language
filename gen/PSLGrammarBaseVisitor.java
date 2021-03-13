@@ -72,14 +72,14 @@ public class PSLGrammarBaseVisitor<T> extends AbstractParseTreeVisitor<T> implem
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitElif(PSLGrammarParser.ElifContext ctx) { return visitChildren(ctx); }
+	@Override public T visitOtherwiseIf(PSLGrammarParser.OtherwiseIfContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitElse_(PSLGrammarParser.Else_Context ctx) { return visitChildren(ctx); }
+	@Override public T visitOtherwise(PSLGrammarParser.OtherwiseContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *

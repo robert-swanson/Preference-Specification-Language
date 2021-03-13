@@ -1,7 +1,7 @@
 degreeRequirements {
   require "COS 102".
   require "COS 120".
-	require 2 of "COS 381", "COS 421", "COS 436".
+  require 2 of "COS 381", "COS 421", "COS 436".
   require 128 hours.
   require 42 upper division credits.
   require taking "COS 120" before "COS 121".

@@ -87,25 +87,25 @@ public interface PSLGrammarListener extends ParseTreeListener {
 	 */
 	void exitIf_(PSLGrammarParser.If_Context ctx);
 	/**
-	 * Enter a parse tree produced by {@link PSLGrammarParser#elif}.
+	 * Enter a parse tree produced by {@link PSLGrammarParser#otherwiseIf}.
 	 * @param ctx the parse tree
 	 */
-	void enterElif(PSLGrammarParser.ElifContext ctx);
+	void enterOtherwiseIf(PSLGrammarParser.OtherwiseIfContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link PSLGrammarParser#elif}.
+	 * Exit a parse tree produced by {@link PSLGrammarParser#otherwiseIf}.
 	 * @param ctx the parse tree
 	 */
-	void exitElif(PSLGrammarParser.ElifContext ctx);
+	void exitOtherwiseIf(PSLGrammarParser.OtherwiseIfContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link PSLGrammarParser#else_}.
+	 * Enter a parse tree produced by {@link PSLGrammarParser#otherwise}.
 	 * @param ctx the parse tree
 	 */
-	void enterElse_(PSLGrammarParser.Else_Context ctx);
+	void enterOtherwise(PSLGrammarParser.OtherwiseContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link PSLGrammarParser#else_}.
+	 * Exit a parse tree produced by {@link PSLGrammarParser#otherwise}.
 	 * @param ctx the parse tree
 	 */
-	void exitElse_(PSLGrammarParser.Else_Context ctx);
+	void exitOtherwise(PSLGrammarParser.OtherwiseContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link PSLGrammarParser#when}.
 	 * @param ctx the parse tree
