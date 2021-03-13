@@ -20,7 +20,7 @@ else_: ELSE body;
 
 when: WHEN condition body;
 
-condition: TAKING NAME
+condition: TAKING STRING // course
     | NOT condition // not
     | OPENPAREND condition AND condition CLOSEPAREND
     | OPENPAREND condition OR condition CLOSEPAREND
@@ -46,8 +46,8 @@ constraint:
     ;
 
 
-courseNameList: (NAME ',')* NAME;
-courseName: NAME;
+courseNameList: (STRING ',')* STRING;
+courseName: STRING;
 credit_hours: CREDITS | HOURS;
 course_classes: COURSES | CLASSES;
 
@@ -88,6 +88,7 @@ COURSES: 'courses';
 NOT: 'not';
 
 // Atoms
+STRING: '"' .*? '"';
 PERIOD: '.';
 OPENPAREND: '(';
 CLOSEPAREND: ')';
