@@ -365,11 +365,10 @@ Testing the Grammar
 ------------------
 As we wrote out the grammar, we realized that there were several changes that needed to be made for parsing ease / usability.
 
-First, we changed the `:` after a block name to `{ body }`.
-Second, we added `otherwise` as an option in addition to the `if` statements.
-Third, we added boolean logic and forced parentheses to the conditions of the `if` statements.
-We also fleshed out that the conditions for if statements might be and all the potential constraints for
-what might follow the `require` keyword.
+1. we changed the `:` after a block name to `{ body }`.
+2. We added `otherwise` as an option in addition to the `if` statements.
+3. We added boolean logic to conditionals and forced parentheses around uses of `and` and `or` to make order of operations explicit.
+4. We also fleshed out that the conditions for if statements might be and all the potential constraints for what might follow the `require` keyword.
 
 These changes are reflected in the input listed in Project Selection.
 
@@ -421,50 +420,6 @@ Reflection
 List any other comments below.
 Feel free to provide any feedback on how much you learned from doing the assignment, and whether you enjoyed doing it.
 -->
-
-
-
-
-
-
-<!-- THE FOLLOWING IS HERE ONLY FOR REFERENCE  -->
-<!-- DELETE THE FOLLOWING SECTION BEFORE SUBMITTING TO CANVAS -->
-<!-- VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV -->
-
-A Few Markdeep Examples
-========================
-
-I have left some examples below to demonstrate how you can format your write-up using Markdeep.
-For more details, see [http://casual-effects.com/markdeep/features.md.html](http://casual-effects.com/markdeep/features.md.html).
-Remove this section from your final submission :)
-
-
-Below is a "Hello, World!" Python program.
-You can include code (`x = 2`) in your sentences, too!
-
-~~~~
-#!/usr/bin/python
-
-print("Hello, World!")
-~~~~
-
-Below is a screenshot showing me running the program above.
-
-![A screenshot showing Python running a "Hello, World!" program.](screenshot.png width="600px")
-
-Note: included images need to be included along with the `readme.html` file.
-
-
-You can even include math ($x = 2$) in your readme.
-For larger equations, use double dollar signs!
-
-$$ f(x) = \sum_{x=0}^{100} \frac{x^2 + 1}{2x + 1} $$
-
-
-<!-- ΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛ -->
-
-
-
 
 
 <!--   Feel free to modify the following to fit a theme of your choosing   -->
