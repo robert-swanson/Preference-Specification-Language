@@ -386,6 +386,8 @@ combines a lot of potential inputs.
 ![A screenshot showing the successful parsing of good-integrated.psl](images/good-integrated.png width="600px")
 
 Bad Inputs:
+
+### Bad And
 ~~~~
 name {
     if taking "COS 120" taking "COS 121" then {
@@ -395,11 +397,13 @@ name {
 ~~~~
 ![A screenshot showing the unsuccessful parsing of bad-and.psl](images/bad-and.png width="600px")
 
+### Bad No Block
 ~~~~
 require "COS 120".
 ~~~~
 ![A screenshot showing the unsuccessful parsing of bad-no-block.psl](images/bad-no-block.png width="600px")
 
+### Bad Period
 ~~~~
 name {
     require "COS 120"
@@ -407,6 +411,7 @@ name {
 ~~~~
 ![A screenshot showing the unsuccessful parsing of bad-period.psl](images/bad-period.png width="600px")
 
+### Bad Preference
 ~~~~
 name {
     prefer "COS 120".
@@ -414,6 +419,7 @@ name {
 ~~~~
 ![A screenshot showing the unsuccessful parsing of bad-preference.psl](images/bad-preference.png width="600px")
 
+### Bad String
 ~~~~
 name {
     require cos 120.
