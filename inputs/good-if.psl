@@ -1,0 +1,14 @@
+definitions {
+	priority strongly 10.
+	priority slightly 1.
+}
+
+studentPreferences {
+	if taking COS-436 then {
+		prefer slightly COS-381.
+	} else if not taking COS-420 {
+    require taking COS-430.
+  } else {
+		prefer slightly not taking COS-421.
+	}
+}
