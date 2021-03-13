@@ -4,11 +4,11 @@ definitions {
 }
 
 studentPreferences {
-	if taking COS-436 then {
-		prefer slightly COS-381.
-	} else if not taking COS-420 {
-    require taking COS-430.
-  } else {
-		prefer slightly not taking COS-421.
+    if taking "COS 436" then {
+        prefer slightly "COS 381".
+    } otherwise if not taking "COS 420" then {
+        require taking "COS 430".
+    } otherwise {
+		prefer slightly not taking "COS 421".
 	}
 }

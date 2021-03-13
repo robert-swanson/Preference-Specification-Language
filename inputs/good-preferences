@@ -4,7 +4,7 @@ definitions {
 }
 
 studentPreferences {
-	prefer strongly COS-121.
+	prefer strongly "COS 121".
 	prefer strongly later classes.
-  prefer slightly not COS-104.
+  prefer slightly not "COS 104".
 }

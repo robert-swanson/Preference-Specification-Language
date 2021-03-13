@@ -14,9 +14,9 @@ priority: PRIORITY NAME NUM PERIOD;
 require: REQUIRE constraint PERIOD;
 prefer: PREFER NAME constraint PERIOD;
 
-if_: IF condition THEN body elif* else_?;
-elif: OTHERWISE IF condition THEN body;
-else_: OTHERWISE body;
+if_: IF condition THEN body otherwiseIf* otherwise?;
+otherwiseIf: OTHERWISE IF condition THEN body;
+otherwise: OTHERWISE body;
 
 when: WHEN condition body;
 

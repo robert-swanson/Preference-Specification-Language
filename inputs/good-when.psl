@@ -4,7 +4,7 @@ definitions {
 }
 
 studentPreferences {
-	when taking COS-381 {
+	when taking "COS 381" {
 		prefer moderately less credits.
 	}
 }

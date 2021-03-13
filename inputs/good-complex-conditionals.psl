@@ -1,14 +1,14 @@
 studentPreferences {
-	if taking COS-381 {
+	if taking "COS 381" then {
 		prefer moderately less credits.
 	}
-	if (taking COS-381 and taking COS-245)  {
+	if (taking "COS 381" and taking "COS 245") then {
 		prefer moderately less credits.
 	}
-	if ((taking COS-381 and taking COS-245) or taking COS-120)  {
+	if ((taking "COS 381" and taking "COS 245") or taking "COS 120") then {
 		prefer moderately less credits.
 	}
-	if ((taking COS-381 and taking COS-245) or (taking COS-120 and taking COS-121))  {
+	if ((taking "COS 381" and taking "COS 245") or (taking "COS 120" and taking "COS 121")) then {
 		prefer moderately less credits.
 	}
 }
