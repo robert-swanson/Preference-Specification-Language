@@ -30,7 +30,7 @@ Authors
 ------------------|-------------
 names             | Rob Swanson & Liz Yeiter
 computer + OS     | macbook
-time to complete  | 2 hrs
+time to complete  | 9 hrs
 partner           | see names
 additional help   | see Reflection section
 </div>
@@ -54,42 +54,64 @@ There is a lot to think about when creating a plan, and all the moving parts can
 <!-- Create example "solutions". What is the expected output for some examples of valid input? -->
 Expected Solutions
 ------------------
-The input would be a `.cps` file that specifies user preferences and degree requirements in a human readable format.
+The input would be a `.psl` file that specifies user preferences and degree requirements in a human readable format.
+(We renamed the type of file from `.cps` to `.psl`, Preference Specification Language, on 3.13.21)
 For example, the following file describes a few requirements and then specifies a few user preferences
 ~~~~
-definitions:
-	priority strongly 10.
-	priority moderately 5.
-	priority slightly 1.
+definitions {
+priority strongly 10.
+priority moderately 5.
+priority slightly 1.
+}
 
-computerScienceBSRequirements:
-	require "COS 102".
-	require "COS 103".
-	require "COS 120".
-	require "COS 121".
+computerScienceBSRequirements {
+require "COS 102".
+require "COS 103".
+require "COS 120".
+require "COS 121".
 
-	require 1 of "COS 311", "COS 321".
-	require 2 of "COS 381", "COS 421", "COS 436".
+require 1 of "COS 311", "COS 321".
+require 2 of "COS 381", "COS 421", "COS 436".
 
-	require 128 hours.
-	require 42 upper devision hours.
+require 128 hours.
+require 42 upper division credits.
 
-	require taking "COS 120" before "COS 121".
+require taking "COS 120" before "COS 121".
+}
 
-studentPreferences:
-	prefer strongly "COS 121".
-	prefer moderately later classes.
+studentPreferences {
+prefer strongly "COS 121".
+prefer moderately later classes.
 
-	if taking "COS 436" then {
-		prefer slightly "COS 381".
-		prefer slightly not taking "COS 421".
-	}
+if taking "COS 436" then {
+prefer slightly "COS 381".
+prefer slightly not taking "COS 421".
+} otherwise {
+prefer slightly not taking "COS 421".
+}
 
-	when taking "COS 381" {
-		prefer moderately fewer credits.
-	}
+when taking "COS 381" {
+prefer moderately less credits.
+}
+
+when (taking "COS 381" and taking "COS 333") {
+prefer moderately less credits.
+}
+
+when ((taking "COS 381" or taking "MAT 215") and taking "COS 121") {
+prefer moderately less credits.
+}
+
+when (taking "COS 381" or (taking "MAT 215" and taking "COS 121")) {
+prefer moderately less credits.
+}
+
+require "COS 121".
+require not "COS 121".
+prefer moderately "COS 121".
+}
 ~~~~
-[Example `input.cps`]
+[Example `good-integrated.psl`]
 
 The output would be a python file which includes a python function for each requirement, which takes in the context of a plan and returns some value corresponding to that requirement's satisfaction.
 Other possible outputs could be a prolog fact file or a json document.
@@ -203,7 +225,7 @@ def contextFromSemester(contextIn, semester):
 <!-- Define functionality. How is the output determined for a given input? -->
 Define Functionality
 ------------------
-A person making use of this system would start by creating a `.cps` input file that follows the language specification to define the requirements of their degrees (possibly by importing from other files).
+A person making use of this system would start by creating a `.psl` input file that follows the language specification to define the requirements of their degrees (possibly by importing from other files).
 They would then run the compiler which would produce a python file with two functions:
 1. `isValidPlan(plan)` which returns a boolean
 2. `planScore(plan)` which returns a double between 0 and 1, with 1 being the highest possible score, which can only be achived when all applied preferences are fully met (which is not possible for preferences which use a sigmoid function).
@@ -235,33 +257,142 @@ Rob made example input and output, and contributed to the readme.
 
 Liz made the template README and filled out initial stuff and discussed semantic vs syntactic examples.
 
-Grammar
+Grammar / Parser (we did these in one step)
 ================
 Grammar
 ------------------
 ~~~~
-grammar
+grammar PSLGrammar;
+
+start: block+ EOF;
+
+block: NAME body;
+body: '{' statement+ '}';
+statement: require
+| priority
+| prefer
+| if_
+| when;
+
+priority: PRIORITY NAME NUM PERIOD;
+require: REQUIRE constraint PERIOD;
+prefer: PREFER NAME constraint PERIOD;
+
+if_: IF condition THEN body otherwiseIf* otherwise?;
+otherwiseIf: OTHERWISE IF condition THEN body;
+otherwise: OTHERWISE body;
+
+when: WHEN condition body;
+
+condition: TAKING STRING // course
+| NOT condition // not
+| OPENPAREND condition AND condition CLOSEPAREND
+| OPENPAREND condition OR condition CLOSEPAREND
+| OPENPAREND condition CLOSEPAREND
+;
+
+constraint:
+TAKING? courseNameList // courses
+| NUM credit_hours // creditHours
+| NUM OF courseNameList // X of courses
+| NUM UPPER DIVISION credit_hours // upper division hours
+| TAKING courseNameList BEFORE courseName // prereqs
+
+| LATER course_classes
+| EARLIER course_classes
+
+| MORE_ course_classes
+| LESS course_classes
+| MORE_ credit_hours
+| LESS credit_hours
+
+| NOT constraint // not
+;
+
+
+courseNameList: (STRING ',')* STRING;
+courseName: STRING;
+credit_hours: CREDITS | HOURS;
+course_classes: COURSES | CLASSES;
+
+// Statement Types
+PRIORITY: 'priority';
+REQUIRE: 'require';
+PREFER: 'prefer';
+
+IF: 'if';
+THEN: 'then';
+OTHERWISE: 'otherwise';
+WHEN: 'when';
+AND: 'and';
+OR: 'or';
+
+// Constraints
+
+TAKING: 'taking';
+BEFORE: 'before';
+
+CREDITS: 'credits';
+HOURS: 'hours';
+
+UPPER: 'upper';
+DIVISION: 'division';
+OF: 'of';
+
+LATER: 'later';
+EARLIER: 'earlier';
+
+LESS: 'less';
+MORE_: 'more';
+
+
+CLASSES: 'classes';
+COURSES: 'courses';
+NOT: 'not';
+
+// Atoms
+STRING: '"' .*? '"';
+PERIOD: '.';
+OPENPAREND: '(';
+CLOSEPAREND: ')';
+NUM: [0-9]+;
+NAME: [a-zA-Z]('-'|'_'|[a-zA-Z0-9])*;
+
+WS      : [ \t\n]+ -> skip ;  // tells ANTLR to ignore these
 ~~~~
 
 Testing the Grammar
 ------------------
+As we wrote out the grammar, we realized that there were several changes that needed to be made for parsing ease / usability.
 
-Splitting Up the Work
-------------------
+First, we changed the `:` after a block name to `{ body }`.
+Second, we added `otherwise` as an option in addition to the `if` statements.
+Third, we added boolean logic and forced parentheses to the conditions of the `if` statements.
+We also fleshed out that the conditions for if statements might be and all the potential constraints for
+what might follow the `require` keyword.
 
-Parser
-======================
-Parser
-------------------
-~~~~
-parser
-~~~~
+These changes are reflected in the input listed in Project Selection.
+
+We used the Definitive ANTLR 4 Reference book to implement strings, page 76.
+
 
 Testing the Parser
 ------------------
+<!--list correct and incorrect inputs-->
+We made several good and bad input files.
+
+Good Inputs: For the sake of space, I will just show the good output of `good-integrated.psl`, which
+combines a lot of potential inputs.
+
+![A screenshot showing the successful parsing of good-integrated.psl](good-integrated.png width="600px")
 
 Splitting Up the Work
 ------------------
+We did most of the main work of creating/fixing the grammar together.
+
+Rob worked on a bit of the grammar on his own and made multiple correct and incorrect inputs.
+
+Liz worked on the readme, generated the parser, and set up a java class to run inputs.
 
 Translator
 ======================
