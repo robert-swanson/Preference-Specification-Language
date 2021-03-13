@@ -20,7 +20,12 @@ else: ELSE body;
 
 when: WHEN condition body;
 
-condition: TAKING NAME;
+condition: TAKING NAME
+    | NOT condition // not
+    | '(' condition AND condition ')'
+    | '(' condition OR condition ')'
+    ;
+
 constraint:
      TAKING? courseNameList // courses
     | NUM credit_hours // creditHours
@@ -55,6 +60,8 @@ THEN: 'then';
 ELIF: 'elif';
 ELSE: 'else';
 WHEN: 'when';
+AND: 'and';
+OR: 'or';
 
 // Constraints
 

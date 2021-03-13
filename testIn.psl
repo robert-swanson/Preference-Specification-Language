@@ -34,6 +34,18 @@ studentPreferences {
 		prefer moderately less credits.
 	}
 
+	when (taking COS-381 and taking COS-333) {
+    		prefer moderately less credits.
+    }
+
+    when ((taking COS-381 or taking MAT-215) and taking thing) {
+    		prefer moderately less credits.
+    }
+
+    when (taking COS-381 or (taking MAT-215 and taking thing)) {
+        		prefer moderately less credits.
+    }
+
 	require COS-121.
 	require not COS-121.
 	prefer moderately COS-121.
