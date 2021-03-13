@@ -15,8 +15,8 @@ require: REQUIRE constraint PERIOD;
 prefer: PREFER NAME constraint PERIOD;
 
 if_: IF condition THEN body elif* else_?;
-elif: ELIF condition THEN body;
-else_: ELSE body;
+elif: OTHERWISE IF condition THEN body;
+else_: OTHERWISE body;
 
 when: WHEN condition body;
 
@@ -58,8 +58,7 @@ PREFER: 'prefer';
 
 IF: 'if';
 THEN: 'then';
-ELIF: 'elif';
-ELSE: 'else';
+OTHERWISE: 'otherwise';
 WHEN: 'when';
 AND: 'and';
 OR: 'or';
