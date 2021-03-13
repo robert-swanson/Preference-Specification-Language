@@ -387,27 +387,37 @@ combines a lot of potential inputs.
 
 Bad Inputs:
 ~~~~
-bad
+name {
+    if taking "COS 120" taking "COS 121" then {
+        require "COS 120".
+    }
+}
 ~~~~
 ![A screenshot showing the unsuccessful parsing of bad-and.psl](images/bad-and.png width="600px")
 
 ~~~~
-bad
+require "COS 120".
 ~~~~
 ![A screenshot showing the unsuccessful parsing of bad-no-block.psl](images/bad-no-block.png width="600px")
 
 ~~~~
-bad
+name {
+    require "COS 120"
+}
 ~~~~
 ![A screenshot showing the unsuccessful parsing of bad-period.psl](images/bad-period.png width="600px")
 
 ~~~~
-bad
+name {
+    prefer "COS 120".
+}
 ~~~~
 ![A screenshot showing the unsuccessful parsing of bad-preference.psl](images/bad-preference.png width="600px")
 
 ~~~~
-bad
+name {
+    require cos 120.
+}
 ~~~~
 ![A screenshot showing the unsuccessful parsing of bad-string.psl](images/bad-string.png width="600px")
 
