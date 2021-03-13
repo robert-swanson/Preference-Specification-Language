@@ -1,0 +1,5 @@
+name {
+  if taking "COS 120" taking "COS 121" then {
+    require "COS 120".
+  }
+}
