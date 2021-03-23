@@ -1,55 +1,43 @@
-def courseNameInPlan(context, courseName):
-    return context.courses.contains(courseName)
-
-def nCourseNamesInPlan(context, n, fromCourseNames):
-    count = 0
-    for courseName in fromCourseNames:
-        if courseNameInPlan(context, courseName):
-            count += 1
-            if count >= n:
-                return true
-    return false
-
-def leftBeforeRight(context, leftCourseName, rightCourseName):
-    if courseNameInPlan(leftCourseName) and courseNameInPlan(rightCourseName):
-        return context.courses[leftCourseName].semseter < context.courses[rightCourseName].semseter
-
-EARLIEST_MEETING_TIME = 800
-LATEST_MEETING_TIME = 1500
-
-def averageMeetingTime(context):
-    timeSum = 0
-    for meeting in context.meetings:
-        timeSum += (meeting.time - EARLIEST_MEETING_TIME) / (LATEST_MEETING_TIME - EARLIEST_MEETING_TIME)
-    return timeSum / len(context.meetings)
-
-def credits(context):
-    creditSum = 0
-    for meeting in context.meetings:
-        creditSum += meeting.credits
-    return creditSum
-
-def creditsOver(context, minCourseNumber):
-    creditSum = 0
-    for meeting in context.meetings:
-        if meeting.courseNumber >= minCourseNumber:
-            creditSum += meeting.credits
-    return creditSum
-
-def applyPreference(totalScore, maxScore, scaler, weight, score):
-    return (totalScore+weight*scaler(preferenceSatisfaction), maxScore+weight)
-
+# scalar functions
 def percentage(score):
     return min(max(score, 1), 0) * weight
-
 def sigmoid(score):
     return weight/(1+10**(-score))
 def reverseSigmoid(score):
     return weight/(1+10**(score))
 
-def contextFromSemester(contextIn, semester):
-    contextOut = { courses: [], meetings: [] }
-    for meeting in contextIn.meeting:
-        if meeting.semester == semester:
-            contextOut.courses.append(meeting.course)
-            contextOut.meetings.append(meeting)
+# applyPreference
+def applyPreference(totalScore, maxScore, scalar, weight, score):
+    return (totalScore+weight*scalar(score), maxScore+weight)
+
+
+# plan evaluators
+def courseNameInContext(context, courseName):
+    if termSectionForCourseName(context, courseName) != None:
+        return true
+    else:
+        return false
+
+def nCourseNamesInContext(context, n, courseNamesList):
+    count = 0
+    for courseName in courseNamesList:
+        if courseNameInContext(context, courseName):
+            count += 1
+            if count >= n:
+                return true
+    return false
+
+def violatesLeftBeforeRight(context, leftCourseName, rightCourseName):
+    leftTerm = termSectionForCourseName(context, leftCourseName)
+    rightTerm = termSectionForCourseName(context, rightCourseName)
+    if leftTerm != None and rightTerm != None:
+        return leftTerm.term-number < rightTerm.term-number
+    else:
+        return false
+
+def termSectionForCourseName(context, courseName):
+    for term in context.terms:
+            for section in term.sections:
+                if section.course-name == courseName:
+                    return term, section
+    return None
