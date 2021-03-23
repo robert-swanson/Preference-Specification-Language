@@ -3,9 +3,11 @@
     "terms": [
         {
             "term": "spring",
+            "term-number": 0,
             "year": 2021,
             "sections": [
                 {
+                    "course-name": "COS 120",
                     "department-name": "Computer Science",
                     "prefix": "COS",
 
