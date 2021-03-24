@@ -1,3 +1,33 @@
+import sys
+import json
+
+# Initialization
+def printUsage():
+    print("USAGE: python3 evaluator.py plan.json")
+    exit()
+
+def loadPlan():
+    if (len(sys.argv) < 2):
+        printUsage()
+
+    file = open(sys.argv[1])
+    plan = json.load(file)
+    return plan
+
+# Validation
+planIsValid = None
+
+def assertTrue(value, message):
+    global planIsValid
+    if not value:
+        planIsValid = False
+        print("Requirment Violation: {}".format(message))
+def assertFalse(value, message):
+    assertTrue(not value, message)
+
+def asssertEqual(value, expected, message):
+    assertTrue(value == expected, "{} (expected '{}' but found '{}')".format(message, expected, value))
+
 # scalar functions
 def percentage(score):
     return min(max(score, 1), 0) * weight
@@ -14,9 +44,9 @@ def applyPreference(totalScore, maxScore, scalar, weight, score):
 # plan evaluators
 def courseNameInContext(context, courseName):
     if termSectionForCourseName(context, courseName) != None:
-        return true
+        return True
     else:
-        return false
+        return False
 
 def nCourseNamesInContext(context, n, courseNamesList):
     count = 0
@@ -24,8 +54,8 @@ def nCourseNamesInContext(context, n, courseNamesList):
         if courseNameInContext(context, courseName):
             count += 1
             if count >= n:
-                return true
-    return false
+                return True
+    return False
 
 def violatesLeftBeforeRight(context, leftCourseName, rightCourseName):
     leftTerm = termSectionForCourseName(context, leftCourseName)
@@ -33,11 +63,11 @@ def violatesLeftBeforeRight(context, leftCourseName, rightCourseName):
     if leftTerm != None and rightTerm != None:
         return leftTerm.term-number < rightTerm.term-number
     else:
-        return false
+        return False
 
 def termSectionForCourseName(context, courseName):
-    for term in context.terms:
-            for section in term.sections:
-                if section.course-name == courseName:
+    for term in context['terms']:
+            for section in term['sections']:
+                if section['course-name'] == courseName:
                     return term, section
     return None

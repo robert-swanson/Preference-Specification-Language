@@ -2,43 +2,139 @@
     "comments": "None at all",
     "terms": [
         {
-            "term": "spring",
+            "term": "fall",
             "term-number": 0,
-            "year": 2021,
+            "year": 2018,
             "sections": [
                 {
-                    "course-name": "COS 120",
+                    "course-name": "COS 102",
                     "department-name": "Computer Science",
                     "prefix": "COS",
 
-                    "course-name": "Information Technology Concepts",
-                    "number": 101,
-                    "description": "The course focuses on practical understanding and application of computing technology in educational, small business, or organizational environments. Specific topics include an overview of operating systems, application software, computing hardware, telecommunications, networking, and information management systems and analysis. In addition, it heavily emphasizes the impact of technology on modern society and the ethical issues related to use of information and communication systems. This course is offered through Taylor University Online (TUO) and does not count toward any major, minor, or foundational core curriculum requirement for residential students.",
+                    "course-title": "Information Technology Concepts",
+                    "number": 102,
+                    "description": "An introduction to the basic concepts of “system” and “process” with particular emphasis on computing systems. Major topics include systems thinking, quality, problem solving, and design.",
                     "offering-pattern": "unkown",
 
                     "section": 1,
                     "type": "lecture",
                     "credits": 3,
-                    "professors": [
-                        "Dr. X",
-                        "Dr. Y"
-                    ],
-                    "location": {
-                        "building": "Euler",
-                        "room-number": "217"
-                    },
-                    "num-enrolled": 0,
-                    "max-enrollment": 0,
-                    "start-date": "2021-03-22",
+                    "professors": ["B Roller"],
+                    "location": { "building": "Euler", "room-number": "201" },
+                    "num-enrolled": 10,
+                    "max-enrollment": 35,
                     "meetings": [
                         {
-                            "days": [
-                                "Monday",
-                                "Wednesday",
-                                "Friday"
-                            ],
-                            "start-time": "12:00 PM",
-                            "end-time": "12:50 PM"
+                            "days": [ "Monday", "Wednesday", "Friday" ],
+                            "start-time": "8:00 AM",
+                            "end-time": "8:50 AM"
+                        }
+                    ]
+                },
+                {
+                    "course-name": "COS 120",
+                    "department-name": "Computer Science",
+                    "prefix": "COS",
+
+                    "course-title": "Intro Computational Prob Solv",
+                    "number": 120,
+                    "description": "",
+                    "offering-pattern": "fall",
+
+                    "section": 1,
+                    "type": "lecture",
+                    "credits": 4,
+                    "professors": ["A White"],
+                    "location": { "building": "Euler", "room-number": "201" },
+                    "num-enrolled": 13,
+                    "max-enrollment": 30,
+                    "meetings": [
+                        {
+                            "days": [ "Monday", "Wednesday", "Friday" ],
+                            "start-time": "9:00 AM",
+                            "end-time": "9:50 AM"
+                        }
+                    ]
+                },
+                {
+                    "course-name": "COS 120",
+                    "department-name": "Computer Science",
+                    "prefix": "COS",
+
+                    "course-title": "Computational Prob Solvg Lab I",
+                    "number": 120,
+                    "description": "",
+                    "offering-pattern": "fall",
+
+                    "section": 3,
+                    "type": "lab",
+                    "credits": 0,
+                    "professors": ["A White"],
+                    "location": { "building": "Euler", "room-number": "201" },
+                    "num-enrolled": 9,
+                    "max-enrollment": 15,
+                    "meetings": [
+                        {
+                            "days": [ "Tuesday" ],
+                            "start-time": "8:00 AM",
+                            "end-time": "9:50 AM"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "term": "spring",
+            "term-number": 1,
+            "year": 2019,
+            "sections": [
+                {
+                    "course-name": "COS 121",
+                    "department-name": "Computer Science",
+                    "prefix": "COS",
+
+                    "course-title": "Foundations Computer Science",
+                    "number": 121,
+                    "description": "",
+                    "offering-pattern": "always",
+
+                    "section": 1,
+                    "type": "lecture",
+                    "credits": 4,
+                    "professors": ["S. Brandle"],
+                    "location": { "building": "Euler", "room-number": "201" },
+                    "num-enrolled": 17,
+                    "max-enrollment": 30,
+                    "meetings": [
+                        {
+                            "days": [ "Monday", "Wednesday", "Friday" ],
+                            "start-time": "1:00 PM",
+                            "end-time": "1:50 PM"
+                        }
+                    ]
+                },
+                {
+                    "course-name": "COS 121",
+                    "department-name": "Computer Science",
+                    "prefix": "COS",
+
+                    "course-title": "Foundations Computer Science",
+                    "number": 121,
+                    "description": "",
+                    "offering-pattern": "always",
+
+                    "section": 3,
+                    "type": "lab",
+                    "credits": 0,
+                    "professors": ["S. Brandle"],
+                    "location": { "building": "Euler", "room-number": "201" },
+                    "num-enrolled": 17,
+                    "max-enrollment": 30,
+                    "meetings": [
+                        {
+                            "days": [ "Tuesday" ],
+                            "start-time": "2:00 PM",
+                            "end-time": "3:50 PM"
                         }
                     ]
                 }
