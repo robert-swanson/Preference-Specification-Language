@@ -1,0 +1,107 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "http://envisageplanner.com/schema-dsl-plan",
+    "title": "Plan",
+    "type": "object",
+    "properties": {
+        "$schema": {"type": "string"},
+        "comments": { "type": "string" },
+        "terms": {
+            "type": "array",
+            "items": { "$ref": "#/definitions/term" }
+        }
+    },
+    "definitions": {
+        "term": {
+            "description": "A semester (or other term)",
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["term", "year", "sections"],
+            "properties": {
+                "term": {
+                    "type": "string",
+                    "pattern": "^spring|fall|spring|winter|jterm$",
+                    "description": "A term in a plan"
+                },
+                "term-number": {
+                    "type": "integer",
+                    "description": "A number greater than all preceding terms and less than all folowing terms"
+                },
+                "year": { "type": "integer" },
+                "sections": {
+                    "type": "array",
+                    "description": "List of CRNs included in plan for this term",
+                    "items": {
+                        "$ref": "#/definitions/section"
+                    }
+                }
+            }
+        },
+        "section": {
+            "type": "object",
+            "description": "An individual section scheduled in this plan",
+            "required": [  ],
+            "additionalProperties": false,
+            "properties": {
+                "course-name": {"type": "string"},
+                "department-name": {"type": "string"},
+                "prefix": {"type": "string"},
+                "course-title": {"type": "string"},
+                "course-number": {"type": "integer"},
+                "description": {"type": "string"},
+                "offering-pattern": {
+                  "description": "The frequency this course if typically offered",
+                  "type": "string",
+                  "enum": ["unknown", "always", "fall", "spring", "j-term", "summer", "odd-fall", "even-fall", "odd-spring", "even-spring"]
+                },
+                "section": {"type": "integer"},
+                "type": {"type": "string", "enum": ["lecture", "lab"]},
+                "credits": {"type": "integer"},
+                "professors": {
+                    "type": "array",
+                    "items": {"type": "string"}
+                },
+                "location": {
+                    "type": "object",
+                    "items": {"type": "string"}
+                },
+                "num-enrolled": {"type": "integer"},
+                "max-enrollment": {"type": "integer"},
+                "meetings": {
+                    "type": "array",
+                    "description": "Array of metting objects",
+                    "items": {
+                        "type": "object",
+                        "description": "Object containing relevant days of the week, and the start and end time",
+                        "required": ["days", "start-time", "end-time"],
+                        "additionalProperties": false,
+                        "properties": {
+                            "start-time": {
+                                "type": "string",
+                                "pattern": "^\\d{1,2}:\\d{2} ?(PM|AM)$"
+                            },
+                            "end-time": {
+                                "type": "string",
+                                "pattern": "^\\d{1,2}:\\d{2} ?(PM|AM)$"
+                            },
+                            "days": {
+                                "type": "array",
+                                "items": {
+                                    "description": "A day of the week",
+                                    "type": "string",
+                                    "enum": [ "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" ]
+                                },
+                                "uniqueItems": true,
+                                "minItems": 1,
+                                "description": "The days of the week this meeting time applies for"
+                            }
+                        }
+                    }
+
+                }
+
+            }
+            
+        }
+    }
+}

@@ -1,4 +1,5 @@
 {
+    "$schema": "./schema-dsl-plan.json",
     "comments": "None at all",
     "terms": [
         {
@@ -12,9 +13,9 @@
                     "prefix": "COS",
 
                     "course-title": "Information Technology Concepts",
-                    "number": 102,
+                    "course-number": 102,
                     "description": "An introduction to the basic concepts of “system” and “process” with particular emphasis on computing systems. Major topics include systems thinking, quality, problem solving, and design.",
-                    "offering-pattern": "unkown",
+                    "offering-pattern": "unknown",
 
                     "section": 1,
                     "type": "lecture",
@@ -37,7 +38,7 @@
                     "prefix": "COS",
 
                     "course-title": "Intro Computational Prob Solv",
-                    "number": 120,
+                    "course-number": 120,
                     "description": "",
                     "offering-pattern": "fall",
 
@@ -62,7 +63,7 @@
                     "prefix": "COS",
 
                     "course-title": "Computational Prob Solvg Lab I",
-                    "number": 120,
+                    "course-number": 120,
                     "description": "",
                     "offering-pattern": "fall",
 
@@ -94,7 +95,7 @@
                     "prefix": "COS",
 
                     "course-title": "Foundations Computer Science",
-                    "number": 121,
+                    "course-number": 121,
                     "description": "",
                     "offering-pattern": "always",
 
@@ -119,7 +120,7 @@
                     "prefix": "COS",
 
                     "course-title": "Foundations Computer Science",
-                    "number": 121,
+                    "course-number": 121,
                     "description": "",
                     "offering-pattern": "always",
 
@@ -135,6 +136,88 @@
                             "days": [ "Tuesday" ],
                             "start-time": "2:00 PM",
                             "end-time": "3:50 PM"
+                        }
+                    ]
+                },
+                {
+                    "course-name": "BIB 110",
+                    "department-name": "Biblical Studies",
+                    "prefix": "BIB",
+
+                    "course-title": "Biblical Literature I",
+                    "course-number": 110,
+                    "description": "",
+                    "offering-pattern": "always",
+
+                    "section": 2,
+                    "type": "lecture",
+                    "credits": 3,
+                    "professors": ["R. Smith"],
+                    "location": { "building": "Reade", "room-number": "210" },
+                    "num-enrolled": 0,
+                    "max-enrollment": 45,
+                    "meetings": [
+                        {
+                            "days": [ "Monday", "Wednesday", "Friday" ],
+                            "start-time": "8:00 AM",
+                            "end-time": "8:50 AM"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "term": "fall",
+            "term-number": 2,
+            "year": 2019,
+            "sections": [
+                {
+                    "course-name": "BIB 210",
+                    "department-name": "Biblical Studies",
+                    "prefix": "BIB",
+
+                    "course-title": "Biblical Literature II",
+                    "course-number": 210,
+                    "description": "",
+                    "offering-pattern": "always",
+
+                    "section": 2,
+                    "type": "lecture",
+                    "credits": 3,
+                    "professors": ["G. MaGee"],
+                    "location": { "building": "Reade", "room-number": "220" },
+                    "num-enrolled": 16,
+                    "max-enrollment": 45,
+                    "meetings": [
+                        {
+                            "days": [ "Monday", "Wednesday", "Friday" ],
+                            "start-time": "11:00 AM",
+                            "end-time": "11:50 AM"
+                        }
+                    ]
+                },
+                {
+                    "course-name": "COS 121",
+                    "department-name": "Computer Science",
+                    "prefix": "COS",
+
+                    "course-title": "Data Structures and Algorithms",
+                    "course-number": 265,
+                    "description": "",
+                    "offering-pattern": "fall",
+
+                    "section": 1,
+                    "type": "lecture",
+                    "credits": 3,
+                    "professors": ["Denning"],
+                    "location": { "building": "Euler", "room-number": "200" },
+                    "num-enrolled": 13,
+                    "max-enrollment": 35,
+                    "meetings": [
+                        {
+                            "days": [ "Monday", "Wednesday", "Friday" ],
+                            "start-time": "2:00 PM",
+                            "end-time": "2:50 PM"
                         }
                     ]
                 }
