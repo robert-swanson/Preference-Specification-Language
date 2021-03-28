@@ -1,5 +1,6 @@
 import sys
 import json
+import copy
 
 
 # Initialization
@@ -15,6 +16,19 @@ def loadPlan():
     file = open(sys.argv[1])
     plan = json.load(file)
     return plan
+
+# context generator
+def contextFromSemester(contextIn, conditionFunction):
+    contextOut = copy.deepcopy(contextIn)
+    for term in contextIn['terms']:
+        if not conditionFunction(contextFromTerm(term)):
+            contextOut['terms'].remove(term)
+    return contextOut
+
+def contextFromTerm(term):
+    return {
+        "terms": [term]
+    }
 
 
 # Validation
@@ -33,7 +47,7 @@ def assertEquals(value, expected, message):
     assertTrue(value == expected, "{} (expected '{}' but found '{}')".format(message, expected, value))
 
 
-# scalar functions
+# utility functions
 def percentage(score):
     return min(max(score, 1), 0)
 
@@ -42,6 +56,12 @@ def sigmoid(score):
 
 def reverseSigmoid(score):
     return 1/(1+10**(score))
+
+def minsSinceMidnightToArmyTime(mins):
+    return int((mins // 60) * 100 + (mins % 60))
+
+def armyTimeToMinsSinceMidnight(armyTime):
+    return (armyTime//100) * 60 + (armyTime%100)
 
 
 # applyPreference
@@ -89,7 +109,8 @@ def averageStartTime(context):
     for term in context['terms']:
         for section in term['sections']:
             for meeting in section['meetings']:
-                timeSum += meeting['start-time']
+                armyTime = meeting['start-time']
+                timeSum += armyTimeToMinsSinceMidnight(armyTime)
                 counter += 1
     return timeSum / counter
 
@@ -99,6 +120,22 @@ def totalCredits(context):
         for section in term['sections']:
             creditSum += section['credits']
     return creditSum
+
+def totalCreditsGreaterThanEqualToCourseNumber(context, minCourseNumber):
+    creditSum = 0
+    for term in context['terms']:
+        for section in term['sections']:
+            if section['course-number'] >= minCourseNumber:
+                creditSum += section['credits']
+    return creditSum
+
+def totalCoursesGreaterThanEqualToCourseNumber(context, minCourseNumber):
+    courseSum = 0
+    for term in context['terms']:
+        for section in term['sections']:
+            if section['course-number'] >= minCourseNumber:
+                courseSum += 1
+    return courseSum
 
 
 

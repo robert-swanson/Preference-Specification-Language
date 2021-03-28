@@ -29,12 +29,12 @@
 #         creditSum += meeting.credits
 #     return creditSum
 
-def creditsOver(context, minCourseNumber):
-    creditSum = 0
-    for meeting in context.meetings:
-        if meeting.courseNumber >= minCourseNumber:
-            creditSum += meeting.credits
-    return creditSum
+# def creditsOver(context, minCourseNumber):
+#     creditSum = 0
+#     for meeting in context.meetings:
+#         if meeting.courseNumber >= minCourseNumber:
+#             creditSum += meeting.credits
+#     return creditSum
 
 # def applyPreference(totalScore, maxScore, scaler, weight, score):
 #     return (totalScore+weight*scaler(preferenceSatisfaction), maxScore+weight)
@@ -46,10 +46,10 @@ def creditsOver(context, minCourseNumber):
 #     return weight/(1+10**(-score))
 # def reverseSigmoid(score):
 #     return weight/(1+10**(score))
-
-def contextFromSemester(contextIn, semester):
-    contextOut = { courses: [], meetings: [] }
-    for meeting in contextIn.meeting:
-        if meeting.semester == semester:
-            contextOut.courses.append(meeting.course)
-            contextOut.meetings.append(meeting)
+#
+# def contextFromSemester(contextIn, semester):
+#     contextOut = { courses: [], meetings: [] }
+#     for meeting in contextIn.meeting:
+#         if meeting.semester == semester:
+#             contextOut.courses.append(meeting.course)
+#             contextOut.meetings.append(meeting)
