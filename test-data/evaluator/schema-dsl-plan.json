@@ -71,37 +71,41 @@
                     "type": "array",
                     "description": "Array of metting objects",
                     "items": {
-                        "type": "object",
-                        "description": "Object containing relevant days of the week, and the start and end time",
-                        "required": ["days", "start-time", "end-time"],
-                        "additionalProperties": false,
-                        "properties": {
-                            "start-time": {
-                                "type": "string",
-                                "pattern": "^\\d{1,2}:\\d{2} ?(PM|AM)$"
-                            },
-                            "end-time": {
-                                "type": "string",
-                                "pattern": "^\\d{1,2}:\\d{2} ?(PM|AM)$"
-                            },
-                            "days": {
-                                "type": "array",
-                                "items": {
-                                    "description": "A day of the week",
-                                    "type": "string",
-                                    "enum": [ "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" ]
-                                },
-                                "uniqueItems": true,
-                                "minItems": 1,
-                                "description": "The days of the week this meeting time applies for"
-                            }
-                        }
+                        "$ref": "#/definitions/meeting"
                     }
-
                 }
 
             }
             
+        },
+        "meeting": {
+            "type": "object",
+            "description": "Object containing relevant days of the week, and the start and end time",
+            "required": ["days", "start-time", "end-time"],
+            "additionalProperties": false,
+            "properties": {
+                "start-time": {
+                    "type": "integer",
+                    "maximum": 2359,
+                    "minimum": 0
+                },
+                "end-time": {
+                    "type": "integer",
+                    "maximum": 2359,
+                    "minimum": 0
+                },
+                "days": {
+                    "type": "array",
+                    "items": {
+                        "description": "A day of the week",
+                        "type": "string",
+                        "enum": [ "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" ]
+                    },
+                    "uniqueItems": true,
+                    "minItems": 1,
+                    "description": "The days of the week this meeting time applies for"
+                }
+            }
         }
     }
 }

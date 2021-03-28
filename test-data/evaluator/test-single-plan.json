@@ -27,8 +27,8 @@
                     "meetings": [
                         {
                             "days": [ "Monday", "Wednesday", "Friday" ],
-                            "start-time": "8:00 AM",
-                            "end-time": "8:50 AM"
+                            "start-time": 800,
+                            "end-time": 850
                         }
                     ]
                 },
@@ -52,8 +52,8 @@
                     "meetings": [
                         {
                             "days": [ "Monday", "Wednesday", "Friday" ],
-                            "start-time": "9:00 AM",
-                            "end-time": "9:50 AM"
+                            "start-time": 900,
+                            "end-time": 950
                         }
                     ]
                 },
@@ -77,8 +77,8 @@
                     "meetings": [
                         {
                             "days": [ "Tuesday" ],
-                            "start-time": "8:00 AM",
-                            "end-time": "9:50 AM"
+                            "start-time": 800,
+                            "end-time": 950
                         }
                     ]
                 }
@@ -109,8 +109,8 @@
                     "meetings": [
                         {
                             "days": [ "Monday", "Wednesday", "Friday" ],
-                            "start-time": "1:00 PM",
-                            "end-time": "1:50 PM"
+                            "start-time": 1300,
+                            "end-time": 1350
                         }
                     ]
                 },
@@ -134,8 +134,8 @@
                     "meetings": [
                         {
                             "days": [ "Tuesday" ],
-                            "start-time": "2:00 PM",
-                            "end-time": "3:50 PM"
+                            "start-time": 1400,
+                            "end-time": 1550
                         }
                     ]
                 },
@@ -159,8 +159,8 @@
                     "meetings": [
                         {
                             "days": [ "Monday", "Wednesday", "Friday" ],
-                            "start-time": "8:00 AM",
-                            "end-time": "8:50 AM"
+                            "start-time": 800,
+                            "end-time": 850
                         }
                     ]
                 }
@@ -191,8 +191,8 @@
                     "meetings": [
                         {
                             "days": [ "Monday", "Wednesday", "Friday" ],
-                            "start-time": "11:00 AM",
-                            "end-time": "11:50 AM"
+                            "start-time": 1100,
+                            "end-time": 1150
                         }
                     ]
                 },
@@ -216,8 +216,8 @@
                     "meetings": [
                         {
                             "days": [ "Monday", "Wednesday", "Friday" ],
-                            "start-time": "2:00 PM",
-                            "end-time": "2:50 PM"
+                            "start-time": 1400,
+                            "end-time": 1450
                         }
                     ]
                 }
