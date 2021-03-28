@@ -1,10 +1,12 @@
 import sys
 import json
 
+
 # Initialization
 def printUsage():
     print("USAGE: python3 evaluator.py plan.json")
     exit()
+
 
 def loadPlan():
     if (len(sys.argv) < 2):
@@ -14,6 +16,7 @@ def loadPlan():
     plan = json.load(file)
     return plan
 
+
 # Validation
 planIsValid = None
 
@@ -21,20 +24,25 @@ def assertTrue(value, message):
     global planIsValid
     if not value:
         planIsValid = False
-        print("Requirment Violation: {}".format(message))
+        print("Requirement Violation: {}".format(message))
+
 def assertFalse(value, message):
     assertTrue(not value, message)
 
-def asssertEqual(value, expected, message):
+def assertEqual(value, expected, message):
     assertTrue(value == expected, "{} (expected '{}' but found '{}')".format(message, expected, value))
+
 
 # scalar functions
 def percentage(score):
-    return min(max(score, 1), 0) * weight
+    return min(max(score, 1), 0)
+
 def sigmoid(score):
-    return weight/(1+10**(-score))
+    return 1/(1+10**(-score))
+
 def reverseSigmoid(score):
-    return weight/(1+10**(score))
+    return 1/(1+10**(score))
+
 
 # applyPreference
 def applyPreference(totalScore, maxScore, scalar, weight, score):
@@ -61,7 +69,7 @@ def violatesLeftBeforeRight(context, leftCourseName, rightCourseName):
     leftTerm = termSectionForCourseName(context, leftCourseName)
     rightTerm = termSectionForCourseName(context, rightCourseName)
     if leftTerm != None and rightTerm != None:
-        return leftTerm.term-number < rightTerm.term-number
+        return leftTerm['term-number'] < rightTerm['term-number']
     else:
         return False
 
