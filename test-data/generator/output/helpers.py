@@ -29,7 +29,7 @@ def assertTrue(value, message):
 def assertFalse(value, message):
     assertTrue(not value, message)
 
-def assertEqual(value, expected, message):
+def assertEquals(value, expected, message):
     assertTrue(value == expected, "{} (expected '{}' but found '{}')".format(message, expected, value))
 
 
@@ -66,8 +66,8 @@ def nCourseNamesInContext(context, n, courseNamesList):
     return False
 
 def violatesLeftBeforeRight(context, leftCourseName, rightCourseName):
-    leftTerm = termSectionForCourseName(context, leftCourseName)
-    rightTerm = termSectionForCourseName(context, rightCourseName)
+    leftTerm, _ = termSectionForCourseName(context, leftCourseName)
+    rightTerm, _ = termSectionForCourseName(context, rightCourseName)
     if leftTerm is not None and rightTerm is not None:
         return leftTerm['term-number'] < rightTerm['term-number']
     else:
@@ -79,3 +79,26 @@ def termSectionForCourseName(context, courseName):
                 if section['course-name'] == courseName:
                     return term, section
     return None
+
+EARLIEST_MEETING_TIME = 800
+LATEST_MEETING_TIME = 1500
+
+def averageStartTime(context):
+    timeSum = 0
+    counter = 0
+    for term in context['terms']:
+        for section in term['sections']:
+            for meeting in section['meetings']:
+                timeSum += meeting['start-time']
+                counter += 1
+    return timeSum / counter
+
+def totalCredits(context):
+    creditSum = 0
+    for term in context['terms']:
+        for section in term['sections']:
+            creditSum += section['credits']
+    return creditSum
+
+
+

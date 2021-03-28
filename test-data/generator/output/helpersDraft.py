@@ -14,20 +14,20 @@
 #     if courseNameInPlan(leftCourseName) and courseNameInPlan(rightCourseName):
 #         return context.courses[leftCourseName].semester < context.courses[rightCourseName].semseter
 
-EARLIEST_MEETING_TIME = 800
-LATEST_MEETING_TIME = 1500
+# EARLIEST_MEETING_TIME = 800
+# LATEST_MEETING_TIME = 1500
+#
+# def averageMeetingTime(context):
+#     timeSum = 0
+#     for meeting in context.meetings:
+#         timeSum += (meeting.time - EARLIEST_MEETING_TIME) / (LATEST_MEETING_TIME - EARLIEST_MEETING_TIME)
+#     return timeSum / len(context.meetings)
 
-def averageMeetingTime(context):
-    timeSum = 0
-    for meeting in context.meetings:
-        timeSum += (meeting.time - EARLIEST_MEETING_TIME) / (LATEST_MEETING_TIME - EARLIEST_MEETING_TIME)
-    return timeSum / len(context.meetings)
-
-def credits(context):
-    creditSum = 0
-    for meeting in context.meetings:
-        creditSum += meeting.credits
-    return creditSum
+# def credits(context):
+#     creditSum = 0
+#     for meeting in context.meetings:
+#         creditSum += meeting.credits
+#     return creditSum
 
 def creditsOver(context, minCourseNumber):
     creditSum = 0
