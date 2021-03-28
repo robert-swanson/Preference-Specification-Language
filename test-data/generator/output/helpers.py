@@ -51,7 +51,7 @@ def applyPreference(totalScore, maxScore, scalar, weight, score):
 
 # plan evaluators
 def courseNameInContext(context, courseName):
-    if termSectionForCourseName(context, courseName) != None:
+    if termSectionForCourseName(context, courseName) is not None:
         return True
     else:
         return False
@@ -68,7 +68,7 @@ def nCourseNamesInContext(context, n, courseNamesList):
 def violatesLeftBeforeRight(context, leftCourseName, rightCourseName):
     leftTerm = termSectionForCourseName(context, leftCourseName)
     rightTerm = termSectionForCourseName(context, rightCourseName)
-    if leftTerm != None and rightTerm != None:
+    if leftTerm is not None and rightTerm is not None:
         return leftTerm['term-number'] < rightTerm['term-number']
     else:
         return False
