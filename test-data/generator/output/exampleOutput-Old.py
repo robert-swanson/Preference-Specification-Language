@@ -24,7 +24,6 @@ def planScore(plan):
     totalScore = 0
     maxScore = 0
 
-    totalScore += STRONGLY * courseNameInPlan(plan, "COS 121")
     (totalScore, maxScore) = applyPreference(totalScore, maxScore, percentage, STRONGLY, courseNameInPlan(plan, "COS 121"))
     (totalScore, maxScore) = applyPreference(totalScore, maxScore, sigmoid, MODERATLY, averageMeetingTime(plan))
 

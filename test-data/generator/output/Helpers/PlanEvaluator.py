@@ -2,7 +2,6 @@
 import Helpers.Utilities as ut
 from Helpers.ContextStack import ContextStack
 
-
 import json
 import sys
 
@@ -73,6 +72,13 @@ class PlanEvaluator:
             for section in term['sections']:
                 creditSum += section['credits']
         return creditSum
+
+    def totalCourses(self):
+        coursesSum = 0
+        for term in self.contextStack.currentContext()['terms']:
+            for section in term['sections']:
+                coursesSum += 1
+        return coursesSum
 
     # Private Evaluators
 
