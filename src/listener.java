@@ -6,6 +6,7 @@ import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 
+
 public class listener extends PSLGrammarBaseListener {
 
     @Override public void enterStart(PSLGrammarParser.StartContext ctx) { }
@@ -104,7 +105,7 @@ public class listener extends PSLGrammarBaseListener {
 
 
     static public void main(String[] args) throws Exception {
-        CharStream input = CharStreams.fromFileName("inputs/bad/bad-and.psl");
+        CharStream input = CharStreams.fromFileName("test-data/generator/input-good/good-integrated.psl");
         PSLGrammarLexer lexer = new PSLGrammarLexer(input);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         PSLGrammarParser parser = new PSLGrammarParser(tokens);
