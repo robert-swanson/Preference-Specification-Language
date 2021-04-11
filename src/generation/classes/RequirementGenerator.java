@@ -1,4 +1,6 @@
-package generation;
+package generation.classes;
+
+import generation.PythonGenerator;
 
 public class RequirementGenerator {
     String pythonValidation;
@@ -11,15 +13,15 @@ public class RequirementGenerator {
     }
 
     public static RequirementGenerator assertTrue(String value, String message) {
-        return new RequirementGenerator(String.format("validator.assertTrue(%s, %s)", value, message));
+        return new RequirementGenerator(String.format("validator.assertTrue(%s, '%s')", value, message));
     }
 
     public static RequirementGenerator assertFalse(String value, String message) {
-        return new RequirementGenerator(String.format("validator.assertFalse(%s, %s)", value, message));
+        return new RequirementGenerator(String.format("validator.assertFalse(%s, '%s')", value, message));
     }
 
     public static RequirementGenerator assertEquals(String value, String message) {
-        return new RequirementGenerator(String.format("validator.assertFalse(%s, %s)", value, message));
+        return new RequirementGenerator(String.format("validator.assertFalse(%s, '%s')", value, message));
     }
 
 }
