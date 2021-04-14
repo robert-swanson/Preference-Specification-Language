@@ -11,7 +11,7 @@ class ContextStack:
     def popContext(self):
         return self.stack.pop()
 
-    def tryPushSubContextWithCondition(self, conditionFunction):
+    def subcontext(self, conditionFunction):
         contextOut = copy.deepcopy(self.currentContext())
         emptyContext = True
         for term in self.currentContext()['terms']:
