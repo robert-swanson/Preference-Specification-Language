@@ -7,6 +7,7 @@ public class ScorePlanGenerator extends MethodGenerator {
     public ScorePlanGenerator() {
         super("scorePlan");
         addLine("scorer = Scorer()");
+        addLine("scorer.enableDiagnostics()");
         newLine();
     }
 

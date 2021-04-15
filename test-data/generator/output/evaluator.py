@@ -34,7 +34,7 @@ def scorePlan(diagnostics=False):
     scorer.scoreOptimum(evaluator.averageStartTime(), MODERATELY, "Prefer Start 9:00 AM",ut.armyTimeToMinsSinceMidnight(900), leftWorstDeviance=1, rightLowerQuartileDeviance=120)
 
     if evaluator.contextStack.subcontext(lambda contextIn: PlanEvaluator.courseNameInContext(contextIn, "COS 120")):
-        scorer.scoreSigmoid(evaluator.totalCredits(), STRONGLY, "Less classes with COS 120", lowerQuartile=17, higherQuartile=13)
+        scorer.scoreSigmoid(evaluator.totalCredits(), STRONGLY, "Less classes with COS 120", lowerQuartile=17, upperQuartile=13)
         evaluator.contextStack.popContext()
 
     print("Final Score: {:.0f}%".format(scorer.getScore()))

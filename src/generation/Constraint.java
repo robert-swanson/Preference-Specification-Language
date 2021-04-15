@@ -34,6 +34,12 @@ class Constraint {
         PreferenceGenerator preferenceGenerator = PreferenceGenerator.scoreBoolean(EvaluatorGenerator.violatesLeftBeforeRight(left, right), String.format("Taking course %s before course %s", left, right));
         return new RequireableConstraint(requirementGenerator, preferenceGenerator);
     }
+
+    public static RequireableConstraint nCreditsForSemester(int n) {
+        RequirementGenerator requirementGenerator = RequirementGenerator.assertEquals(EvaluatorGenerator.totalCredits(), Integer.toString(n), String.format("%d credits required for semester", n) );
+        PreferenceGenerator preferenceGenerator = PreferenceGenerator.scoreOptimum(EvaluatorGenerator.totalCredits(), String.format("Prefer %d credits for semester", n), Integer.toString(n), null, 1.0, null, null, null, null);
+        return new RequireableConstraint(requirementGenerator, preferenceGenerator);
+    }
 }
 
 class RequireableConstraint extends Constraint {

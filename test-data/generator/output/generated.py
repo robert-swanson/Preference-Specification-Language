@@ -18,8 +18,10 @@ def validatePlan():
 
 def scorePlan():
   scorer = Scorer()
+  scorer.enableDiagnostics()
   
-  scorer.scoreBoolean(evaluator.courseName('COS 121'), 1.0, 'Taking course: COS 121', diagnostics=True)
+  scorer.scoreBoolean(evaluator.courseName('COS 121'), 1.0, 'Taking course: COS 121')
+  scorer.scoreOptimum(evaluator.totalCredits(), 10.0, 'Prefer 15 credits for semester', 15, worstDeviance=None, lowerQuartileDeviance=1.0, leftWorstDeviance=None, leftLowerQuartileDeviance=None, rightWorstDeviance=None, rightLowerQuartileDeviance=None)
   
   print("Final Score: {:.0f}%".format(scorer.getScore()))
 

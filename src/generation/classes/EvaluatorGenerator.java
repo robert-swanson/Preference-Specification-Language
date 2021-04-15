@@ -15,6 +15,25 @@ public class EvaluatorGenerator {
         return String.format("evaluator.violatesLeftBeforeRight('%s', '%s')", left, right);
     }
 
+    public static String totalCredits() {
+        return "evaluator.totalCredits()";
+    }
+
+    private static String minsSinceMidnightToArmyTime(String minsSinceMidnight) {
+        return String.format("ut.minsSinceMidnightToArmyTime(%s)", minsSinceMidnight);
+    }
+
+    public static String totalCreditGreaterThanEqualToCourseNumber(int courseNumber) {
+        return String.format("evaluator.totalCreditsGreaterThanEqualToCourseNumber(%d)", courseNumber);
+    }
+
+    public static String averageStartTime() {
+        return "evaluator.averageStartTime()";
+    }
+
+
+
+
     private static String arrayListToPython(ArrayList<String> list) {
         StringBuilder rv = new StringBuilder();
         boolean first = true;
@@ -27,5 +46,6 @@ public class EvaluatorGenerator {
         }
         return rv.toString();
     }
+
 
 }

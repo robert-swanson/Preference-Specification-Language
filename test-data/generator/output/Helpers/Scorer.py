@@ -74,14 +74,14 @@ class Scorer:
         self.score += score * weight
         return score*weight
 
-    def scoreSigmoid(self, value, weight, preferenceName, worstBound=None, bestBound=None, lowerQuartile=None, higherQuartile=None):
+    def scoreSigmoid(self, value, weight, preferenceName, worstBound=None, bestBound=None, lowerQuartile=None, upperQuartile=None):
         # worstBound describes the value required to return a score of 0.25 * weight
         # bestBound describes the value required to return a score of 0.75 * weight
         # if bestBound < worstBound then the sigmoid function is reversed, giving higher scores for lower values
         assert bool(worstBound) != bool(lowerQuartile)
-        assert bool(bestBound) != bool(higherQuartile)
+        assert bool(bestBound) != bool(upperQuartile)
         lower = worstBound if worstBound else lowerQuartile
-        upper = bestBound if bestBound else higherQuartile
+        upper = bestBound if bestBound else upperQuartile
         assert lower != upper
 
         normalizedValue = (value - lower) / (upper - lower) - .5

@@ -20,8 +20,8 @@ public class RequirementGenerator {
         return new RequirementGenerator(String.format("validator.assertFalse(%s, '%s')", value, message));
     }
 
-    public static RequirementGenerator assertEquals(String value, String message) {
-        return new RequirementGenerator(String.format("validator.assertFalse(%s, '%s')", value, message));
+    public static RequirementGenerator assertEquals(String value, String expected, String message) {
+        return new RequirementGenerator(String.format("validator.assertEquals(%s, %s, '%s')", value, expected, message));
     }
 
 }

@@ -14,8 +14,10 @@ public class ExampleGeneration {
         Constraint.nCourseNames(2, new ArrayList<String>(Arrays.asList("COS 120", "COS 121", "COS 143"))).require();
         Constraint.leftBeforeRight("COS 120", "COS 121").require();
 
+
         // Preferences
         Constraint.courseName("COS 121").prefer(1.0);
+        Constraint.nCreditsForSemester(15).prefer(10); // TODO: n credits in plan, courses in plan/semester
 
         File output = new File("test-data/generator/output/generated.py");
         output.createNewFile();

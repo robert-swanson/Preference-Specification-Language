@@ -26,11 +26,19 @@ public class PreferenceGenerator {
     }
 
     public static PreferenceGenerator scoreBoolean(String value, String preferenceName) {
-        return new PreferenceGenerator("scorer.scoreBoolean(%s, %s, '%s', diagnostics=%s)", value, new Object[]{preferenceName, diagnostics ? "True" : "False"});
+        return new PreferenceGenerator("scorer.scoreBoolean(%s, %s, '%s')", value, new Object[]{preferenceName});
     }
 
-    public static PreferenceGenerator scoreSigmoid(String value, String preferenceName, double worstBound, double bestBound) {
-        return new PreferenceGenerator("scorer.scoreSigmoid(%s, %s, '%s', worstBound=%f, bestBound=%f, diagnostics=%b)", value, new Object[]{preferenceName, worstBound, bestBound, diagnostics ? "True" : "False"});
+    public static PreferenceGenerator scoreSigmoid(String value, String preferenceName, Double worstBound, Double bestBound, Double lowerQuartile, Double upperQuartile) {
+        return new PreferenceGenerator("scorer.scoreSigmoid(%s, %s, '%s', worstBound=%s, bestBound=%s, lowerQuartile=%s, upperQuartile=%s)", value, new Object[]{preferenceName, dts(worstBound), dts(bestBound), dts(lowerQuartile), dts(upperQuartile)});
+    }
+
+    public static PreferenceGenerator scoreOptimum(String value, String preferenceName, String optimum, Double worstDeviance, Double lowerQuartileDeviance, Double leftWorstDeviance, Double leftLowerQuartileDeviance, Double rightWorstDeviance, Double rightLowerQuartileDeviance ) {
+        return new PreferenceGenerator("scorer.scoreOptimum(%s, %s, '%s', %s, worstDeviance=%s, lowerQuartileDeviance=%s, leftWorstDeviance=%s, leftLowerQuartileDeviance=%s, rightWorstDeviance=%s, rightLowerQuartileDeviance=%s)", value, new Object[]{preferenceName, optimum, dts(worstDeviance), dts(lowerQuartileDeviance), dts(leftWorstDeviance), dts(leftLowerQuartileDeviance), dts(rightWorstDeviance), dts(rightLowerQuartileDeviance)});
+    }
+
+    private static String dts(Double d) {
+        return d == null ? "None" : Double.toString(d);
     }
 
 
