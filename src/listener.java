@@ -1,3 +1,4 @@
+import generation.PythonGenerator;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -5,13 +6,31 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
+import java.io.File;
+import java.io.FileWriter;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Hashtable;
 
 
 public class listener extends PSLGrammarBaseListener {
+    Hashtable<String, Integer> priorities = new Hashtable<>();
 
     @Override public void enterStart(PSLGrammarParser.StartContext ctx) { }
 
-    @Override public void exitStart(PSLGrammarParser.StartContext ctx) { }
+    @Override public void exitStart(PSLGrammarParser.StartContext ctx) throws IOException{
+
+        File output = new File("test-data/generator/output/generated.py");
+        output.createNewFile();
+        FileWriter writer = new FileWriter(output);
+        PythonGenerator.generate(writer); // <-- Generation
+        writer.flush();
+        writer.close();
+//        System.out.print(priorities);
+
+    }
 
 
     @Override public void enterBlock(PSLGrammarParser.BlockContext ctx) { }
@@ -31,7 +50,9 @@ public class listener extends PSLGrammarBaseListener {
 
     @Override public void enterPriority(PSLGrammarParser.PriorityContext ctx) { }
 
-    @Override public void exitPriority(PSLGrammarParser.PriorityContext ctx) { }
+    @Override public void exitPriority(PSLGrammarParser.PriorityContext ctx) {
+        priorities.put(ctx.NAME().toString(), Integer.parseInt(ctx.NUM().toString()));
+    }
 
 
     @Override public void enterRequire(PSLGrammarParser.RequireContext ctx) { }
@@ -41,7 +62,12 @@ public class listener extends PSLGrammarBaseListener {
 
     @Override public void enterPrefer(PSLGrammarParser.PreferContext ctx) { }
 
-    @Override public void exitPrefer(PSLGrammarParser.PreferContext ctx) { }
+    @Override public void exitPrefer(PSLGrammarParser.PreferContext ctx) {
+        if (! priorities.containsKey(ctx.NAME().toString())) {
+            System.out.println(ctx.NAME().toString() + " is not a valid Priority");
+            System.exit(1);
+        }
+    }
 
 
     @Override public void enterIf_(PSLGrammarParser.If_Context ctx) { }
@@ -69,7 +95,14 @@ public class listener extends PSLGrammarBaseListener {
     @Override public void exitCondition(PSLGrammarParser.ConditionContext ctx) { }
 
 
-    @Override public void enterConstraint(PSLGrammarParser.ConstraintContext ctx) { }
+    @Override public void enterConstraint(PSLGrammarParser.ConstraintContext ctx) {
+        // make a bool flag that says whether the statement is a require or not (thus being a prefer) and call
+        // constraint methods from here. If doing this, then the various if's to see which constraint is being used should be done here
+
+        // or determining which constraint can be done here and assigned to a variable, which is then tested in the prefer or required
+
+        // or maybe reach down into children nodes from prefer / require and determine type of constraint from there
+    }
 
     @Override public void exitConstraint(PSLGrammarParser.ConstraintContext ctx) { }
 
@@ -115,5 +148,16 @@ public class listener extends PSLGrammarBaseListener {
 
         parser.start();
 
+//        try {
+//            File output = new File("test-data/generator/output/generated.py");
+//            output.createNewFile();
+//            FileWriter writer = new FileWriter(output);
+//            PythonGenerator.generate(writer); // <-- Generation
+//            writer.flush();
+//            writer.close();
+//            System.out.print(myListener.priorities);
+//        } catch (IOException exception){
+//
+//        }
     }
 }

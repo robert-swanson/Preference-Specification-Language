@@ -4,6 +4,8 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
+import java.io.IOException;
+
 /**
  * This class provides an empty implementation of {@link PSLGrammarListener},
  * which can be extended to create a listener which only needs to handle a subset
@@ -21,7 +23,7 @@ public class PSLGrammarBaseListener implements PSLGrammarListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitStart(PSLGrammarParser.StartContext ctx) { }
+	@Override public void exitStart(PSLGrammarParser.StartContext ctx) throws IOException { }
 	/**
 	 * {@inheritDoc}
 	 *

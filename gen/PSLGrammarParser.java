@@ -4,6 +4,8 @@ import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.misc.*;
 import org.antlr.v4.runtime.tree.*;
+
+import java.io.IOException;
 import java.util.List;
 import java.util.Iterator;
 import java.util.ArrayList;
@@ -124,7 +126,13 @@ public class PSLGrammarParser extends Parser {
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof PSLGrammarListener ) ((PSLGrammarListener)listener).exitStart(this);
+			if ( listener instanceof PSLGrammarListener ) {
+				try {
+					((PSLGrammarListener)listener).exitStart(this);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
