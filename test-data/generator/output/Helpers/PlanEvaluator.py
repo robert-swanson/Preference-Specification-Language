@@ -22,6 +22,38 @@ class PlanEvaluator:
     def courseName(self, name):
         return PlanEvaluator.courseNameInContext(self.contextStack.currentContext(), name)
 
+    def nCourseNamesIn(self, n, courseNamesList):
+        count = 0
+        for courseName in courseNamesList:
+            if self.courseNameInContext(self.contextStack.currentContext(), courseName):
+                count += 1
+                if count >= n:
+                    return True
+        return False
+
+
+    def violatesLeftBeforeRight(self, leftCourseName, rightCourseName):
+        leftTerm = self.termSectionForCourseName(self.contextStack.currentContext(), leftCourseName)
+        rightTerm = self.termSectionForCourseName(self.contextStack.currentContext(), rightCourseName)
+        if leftTerm is not None and rightTerm is not None:
+            return leftTerm[0]['term-number'] < rightTerm[0]['term-number']
+        else:
+            return False
+
+    def totalCredits(self):
+        creditSum = 0
+        for term in self.contextStack.currentContext()['terms']:
+            for section in term['sections']:
+                creditSum += section['credits']
+        return creditSum
+
+    def totalCourses(self):
+        coursesSum = 0
+        for term in self.contextStack.currentContext()['terms']:
+            for section in term['sections']:
+                coursesSum += 1
+        return coursesSum
+
     def totalCreditsGreaterThanEqualToCourseNumber(self, minCourseNumber):
         creditSum = 0
         for term in self.contextStack.currentContext()['terms']:
@@ -38,22 +70,6 @@ class PlanEvaluator:
                     courseSum += 1
         return courseSum
 
-    def nCourseNamesIn(self, n, courseNamesList):
-        count = 0
-        for courseName in courseNamesList:
-            if self.courseNameInContext(self.contextStack.currentContext(), courseName):
-                count += 1
-                if count >= n:
-                    return True
-        return False
-
-    def violatesLeftBeforeRight(self, leftCourseName, rightCourseName):
-        leftTerm = self.termSectionForCourseName(self.contextStack.currentContext(), leftCourseName)
-        rightTerm = self.termSectionForCourseName(self.contextStack.currentContext(), rightCourseName)
-        if leftTerm is not None and rightTerm is not None:
-            return leftTerm[0]['term-number'] < rightTerm[0]['term-number']
-        else:
-            return False
 
     def averageStartTime(self):
         timeSum = 0
@@ -65,20 +81,6 @@ class PlanEvaluator:
                     timeSum += ut.armyTimeToMinsSinceMidnight(armyTime)
                     counter += 1
         return timeSum / counter
-
-    def totalCredits(self):
-        creditSum = 0
-        for term in self.contextStack.currentContext()['terms']:
-            for section in term['sections']:
-                creditSum += section['credits']
-        return creditSum
-
-    def totalCourses(self):
-        coursesSum = 0
-        for term in self.contextStack.currentContext()['terms']:
-            for section in term['sections']:
-                coursesSum += 1
-        return coursesSum
 
     # Private Evaluators
 
