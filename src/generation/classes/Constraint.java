@@ -1,20 +1,51 @@
-package generation;
-
-import generation.classes.EvaluatorGenerator;
-import generation.classes.PreferenceGenerator;
-import generation.classes.RequirementGenerator;
+package generation.classes;
 
 import java.util.ArrayList;
 
-class Constraint {
+public class Constraint {
     protected final PreferenceGenerator preference;
 
-    protected Constraint(PreferenceGenerator preference) {
+    public Constraint(PreferenceGenerator preference) {
         this.preference = preference;
     }
 
     public void prefer(double weight) {
         preference.add(weight);
+    }
+
+    public static RequireableConstraint equalTo(String value, double expected, double deviance, String description) {
+        OptimumParameters params = new OptimumParameters(expected, new SoftBound(deviance));
+        PreferenceGenerator preferenceGenerator = PreferenceGenerator.scoreOptimum(value, description, params);
+        RequirementGenerator requirementGenerator = RequirementGenerator.assertEquals(value, Double.toString(expected), description);
+        return new RequireableConstraint(requirementGenerator, preferenceGenerator);
+    }
+
+    public static RequireableConstraint greaterThan(String value, double min, double deviance, String description) {
+        SigmoidParameters params = new SigmoidParameters(new SoftBound(min-deviance), new SoftBound(min+deviance));
+        PreferenceGenerator preferenceGenerator = PreferenceGenerator.scoreSigmoid(value, description, params);
+        RequirementGenerator requirementGenerator = RequirementGenerator.assertGreaterThan(value, Double.toString(min), description);
+        return new RequireableConstraint(requirementGenerator, preferenceGenerator);
+    }
+
+    public static RequireableConstraint lessThan(String value, double max, double deviance, String description) {
+        SigmoidParameters params = new SigmoidParameters(new SoftBound(max+deviance), new SoftBound(max-deviance));
+        PreferenceGenerator preferenceGenerator = PreferenceGenerator.scoreSigmoid(value, description, params);
+        RequirementGenerator requirementGenerator = RequirementGenerator.assertLessThan(value, Double.toString(max), description);
+        return new RequireableConstraint(requirementGenerator, preferenceGenerator);
+    }
+
+    public static RequireableConstraint greaterThanOrEqualTo(String value, double min, double deviance, String description) {
+        SigmoidParameters params = new SigmoidParameters(new SoftBound(min-deviance), new SoftBound(min+deviance));
+        PreferenceGenerator preferenceGenerator = PreferenceGenerator.scoreSigmoid(value, description, params);
+        RequirementGenerator requirementGenerator = RequirementGenerator.assertGreaterThanEqual(value, Double.toString(min), description);
+        return new RequireableConstraint(requirementGenerator, preferenceGenerator);
+    }
+
+    public static RequireableConstraint lessThanOrEqualTo(String value, double max, double deviance, String description) {
+        SigmoidParameters params = new SigmoidParameters(new SoftBound(max+deviance), new SoftBound(max-deviance));
+        PreferenceGenerator preferenceGenerator = PreferenceGenerator.scoreSigmoid(value, description, params);
+        RequirementGenerator requirementGenerator = RequirementGenerator.assertLessThanEqual(value, Double.toString(max), description);
+        return new RequireableConstraint(requirementGenerator, preferenceGenerator);
     }
 
     public static RequireableConstraint courseName(String courseName) {
@@ -35,6 +66,7 @@ class Constraint {
         return new RequireableConstraint(requirementGenerator, preferenceGenerator);
     }
 
+    /*
     public static RequireableConstraint nCreditsForSemester(int n) {
         return nCreditsConstraintGreaterThanEqualToCourseNumberWithDev(n, 0, 1.0, String.format("%d credits required for semester", n), String.format("%d credits preferred for semester", n));
     }
@@ -92,29 +124,20 @@ class Constraint {
         }
         return new RequireableConstraint(requirementGenerator, preferenceGenerator);
     }
+     */
 
     final static Double TEN_AM = 600.0, NOON = 720.0, TWO_PM = 840.0;
 
-    private static Constraint earlierClasses() {
-        PreferenceGenerator preferenceGenerator = PreferenceGenerator.scoreSigmoid(EvaluatorGenerator.averageStartTime(), "Earlier classes", null, null, TWO_PM, TEN_AM);
+    public static Constraint earlierClasses() {
+        SigmoidParameters parameters = new SigmoidParameters(new SoftBound(TWO_PM), new SoftBound(TEN_AM));
+        PreferenceGenerator preferenceGenerator = PreferenceGenerator.scoreSigmoid(EvaluatorGenerator.averageStartTime(), "Earlier classes", parameters);
         return new Constraint(preferenceGenerator);
     }
-    private static Constraint laterClasses() {
-        PreferenceGenerator preferenceGenerator = PreferenceGenerator.scoreSigmoid(EvaluatorGenerator.averageStartTime(), "Earlier classes", null, null, TEN_AM, TWO_PM);
+    public static Constraint laterClasses() {
+        SigmoidParameters parameters = new SigmoidParameters(new SoftBound(TEN_AM), new SoftBound(TWO_PM));
+        PreferenceGenerator preferenceGenerator = PreferenceGenerator.scoreSigmoid(EvaluatorGenerator.averageStartTime(), "Later classes", parameters);
         return new Constraint(preferenceGenerator);
     }
 }
 
-class RequireableConstraint extends Constraint {
-    private final RequirementGenerator requirement;
-
-    protected RequireableConstraint(RequirementGenerator requirement, PreferenceGenerator preference) {
-        super(preference);
-        this.requirement = requirement;
-    }
-
-    public void require() {
-        requirement.add();
-    }
-}
 
