@@ -17,19 +17,13 @@ import java.util.Hashtable;
 
 public class listener extends PSLGrammarBaseListener {
     Hashtable<String, Integer> priorities = new Hashtable<>();
+    boolean isRequired = true;
+    String[] nameList;
 
     @Override public void enterStart(PSLGrammarParser.StartContext ctx) { }
 
     @Override public void exitStart(PSLGrammarParser.StartContext ctx) throws IOException{
-
-        File output = new File("test-data/generator/output/generated.py");
-        output.createNewFile();
-        FileWriter writer = new FileWriter(output);
-        PythonGenerator.generate(writer); // <-- Generation
-        writer.flush();
-        writer.close();
-//        System.out.print(priorities);
-
+        PythonGenerator.generate("test-data/generator/output/generated.py"); // <-- Generation
     }
 
 
@@ -55,12 +49,16 @@ public class listener extends PSLGrammarBaseListener {
     }
 
 
-    @Override public void enterRequire(PSLGrammarParser.RequireContext ctx) { }
+    @Override public void enterRequire(PSLGrammarParser.RequireContext ctx) {
+        isRequired = true;
+    }
 
     @Override public void exitRequire(PSLGrammarParser.RequireContext ctx) { }
 
 
-    @Override public void enterPrefer(PSLGrammarParser.PreferContext ctx) { }
+    @Override public void enterPrefer(PSLGrammarParser.PreferContext ctx) {
+        isRequired = false;
+    }
 
     @Override public void exitPrefer(PSLGrammarParser.PreferContext ctx) {
         if (! priorities.containsKey(ctx.NAME().toString())) {
@@ -72,12 +70,16 @@ public class listener extends PSLGrammarBaseListener {
 
     @Override public void enterIf_(PSLGrammarParser.If_Context ctx) { }
 
-    @Override public void exitIf_(PSLGrammarParser.If_Context ctx) { }
+    @Override public void exitIf_(PSLGrammarParser.If_Context ctx) {
+        // clear stack seen in condition
+    }
 
 
     @Override public void enterOtherwiseIf(PSLGrammarParser.OtherwiseIfContext ctx) { }
 
-    @Override public void exitOtherwiseIf(PSLGrammarParser.OtherwiseIfContext ctx) { }
+    @Override public void exitOtherwiseIf(PSLGrammarParser.OtherwiseIfContext ctx) {
+        // clear stack seen in condition
+    }
 
 
     @Override public void enterOtherwise(PSLGrammarParser.OtherwiseContext ctx) { }
@@ -90,9 +92,13 @@ public class listener extends PSLGrammarBaseListener {
     @Override public void exitWhen(PSLGrammarParser.WhenContext ctx) { }
 
 
-    @Override public void enterCondition(PSLGrammarParser.ConditionContext ctx) { }
+    @Override public void enterCondition(PSLGrammarParser.ConditionContext ctx) {
+        // make a stack that takes in all conditions
+    }
 
-    @Override public void exitCondition(PSLGrammarParser.ConditionContext ctx) { }
+    @Override public void exitCondition(PSLGrammarParser.ConditionContext ctx) {
+        // look at the things on the stack! made above
+    }
 
 
     @Override public void enterConstraint(PSLGrammarParser.ConstraintContext ctx) {
@@ -104,12 +110,55 @@ public class listener extends PSLGrammarBaseListener {
         // or maybe reach down into children nodes from prefer / require and determine type of constraint from there
     }
 
-    @Override public void exitConstraint(PSLGrammarParser.ConstraintContext ctx) { }
+    @Override public void exitConstraint(PSLGrammarParser.ConstraintContext ctx) {
+        if (isRequired) { // call required things
+            if (ctx.NUM() != null) {
+                if (ctx.OF() != null) {
+//                    NUM OF courseNameList // X of courses
+                    System.out.println("num of "+Arrays.toString(nameList));
+                } else if (ctx.UPPER() != null) {
+//                    NUM UPPER DIVISION credit_hours // upper division hours
+                } else {
+//                    NUM credit_hours // creditHours
+                }
+            } else if (ctx.TAKING() != null) {
+//                TAKING courseNameList BEFORE courseName // prereqs
+            } else if (ctx.LATER() != null) {
+//                LATER course_classes
+            } else if (ctx.EARLIER() != null) {
+//                EARLIER course_classes
+            } else if (ctx.MORE_() != null) {
+                if (ctx.course_classes() != null) {
+                    //courses
+                } else {
+                    //credits
+                }
+            } else if (ctx.LESS() != null) {
+                if (ctx.course_classes() != null) {
+                    //courses
+                } else {
+                    //credits
+                }
+            } else if (ctx.NOT() != null) {
+                //do something here?
+                System.out.print("NOT!");
+            } else {
+                //coursenamelist
+                // call nCourseNames and pass in listLength as N
+                System.out.println(Arrays.toString(nameList));
+            }
+        } else { // call prefer things
+
+        }
+    }
 
 
     @Override public void enterCourseNameList(PSLGrammarParser.CourseNameListContext ctx) { }
 
-    @Override public void exitCourseNameList(PSLGrammarParser.CourseNameListContext ctx) { }
+    @Override public void exitCourseNameList(PSLGrammarParser.CourseNameListContext ctx) {
+        nameList = ctx.getText().replaceAll("\"", "").split(",");
+//        System.out.print(Arrays.toString(nameList));
+    }
 
 
     @Override public void enterCourseName(PSLGrammarParser.CourseNameContext ctx) { }
@@ -148,16 +197,5 @@ public class listener extends PSLGrammarBaseListener {
 
         parser.start();
 
-//        try {
-//            File output = new File("test-data/generator/output/generated.py");
-//            output.createNewFile();
-//            FileWriter writer = new FileWriter(output);
-//            PythonGenerator.generate(writer); // <-- Generation
-//            writer.flush();
-//            writer.close();
-//            System.out.print(myListener.priorities);
-//        } catch (IOException exception){
-//
-//        }
     }
 }
