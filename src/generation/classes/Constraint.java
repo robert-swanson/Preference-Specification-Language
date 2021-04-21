@@ -1,6 +1,7 @@
 package generation.classes;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Constraint {
     protected final PreferenceGenerator preference;
@@ -21,28 +22,28 @@ public class Constraint {
     }
 
     public static RequireableConstraint greaterThan(String value, double min, double deviance, String description) {
-        SigmoidParameters params = new SigmoidParameters(new SoftBound(min-deviance), new SoftBound(min+deviance));
+        SigmoidParameters params = new SigmoidParameters(new SoftBound(min), new SoftBound(min+deviance));
         PreferenceGenerator preferenceGenerator = PreferenceGenerator.scoreSigmoid(value, description, params);
         RequirementGenerator requirementGenerator = RequirementGenerator.assertGreaterThan(value, Double.toString(min), description);
         return new RequireableConstraint(requirementGenerator, preferenceGenerator);
     }
 
     public static RequireableConstraint lessThan(String value, double max, double deviance, String description) {
-        SigmoidParameters params = new SigmoidParameters(new SoftBound(max+deviance), new SoftBound(max-deviance));
+        SigmoidParameters params = new SigmoidParameters(new SoftBound(max), new SoftBound(max-deviance));
         PreferenceGenerator preferenceGenerator = PreferenceGenerator.scoreSigmoid(value, description, params);
         RequirementGenerator requirementGenerator = RequirementGenerator.assertLessThan(value, Double.toString(max), description);
         return new RequireableConstraint(requirementGenerator, preferenceGenerator);
     }
 
     public static RequireableConstraint greaterThanOrEqualTo(String value, double min, double deviance, String description) {
-        SigmoidParameters params = new SigmoidParameters(new SoftBound(min-deviance), new SoftBound(min+deviance));
+        SigmoidParameters params = new SigmoidParameters(new SoftBound(min-deviance), new SoftBound(min));
         PreferenceGenerator preferenceGenerator = PreferenceGenerator.scoreSigmoid(value, description, params);
         RequirementGenerator requirementGenerator = RequirementGenerator.assertGreaterThanEqual(value, Double.toString(min), description);
         return new RequireableConstraint(requirementGenerator, preferenceGenerator);
     }
 
     public static RequireableConstraint lessThanOrEqualTo(String value, double max, double deviance, String description) {
-        SigmoidParameters params = new SigmoidParameters(new SoftBound(max+deviance), new SoftBound(max-deviance));
+        SigmoidParameters params = new SigmoidParameters(new SoftBound(max+deviance), new SoftBound(max));
         PreferenceGenerator preferenceGenerator = PreferenceGenerator.scoreSigmoid(value, description, params);
         RequirementGenerator requirementGenerator = RequirementGenerator.assertLessThanEqual(value, Double.toString(max), description);
         return new RequireableConstraint(requirementGenerator, preferenceGenerator);
@@ -55,8 +56,8 @@ public class Constraint {
     }
 
     public static RequireableConstraint nCourseNames(int n, ArrayList<String> courseNames) {
-        RequirementGenerator requirementGenerator = RequirementGenerator.assertTrue(EvaluatorGenerator.nCourseNamesIn(n, courseNames), String.format("%d courses from [%s] required but not found", n, courseNames.toString()) );
-        PreferenceGenerator preferenceGenerator = PreferenceGenerator.scoreBoolean(EvaluatorGenerator.nCourseNamesIn(n, courseNames), String.format("Taking %d courses from [%s]", n, courseNames.toString()));
+        RequirementGenerator requirementGenerator = RequirementGenerator.assertTrue(EvaluatorGenerator.nCourseNamesIn(n, courseNames), String.format("%d courses from %s required but not found", n, courseNames.toString()) );
+        PreferenceGenerator preferenceGenerator = PreferenceGenerator.scoreBoolean(EvaluatorGenerator.nCourseNamesIn(n, courseNames), String.format("Taking %d courses from %s", n, courseNames.toString()));
         return new RequireableConstraint(requirementGenerator, preferenceGenerator);
     }
 
