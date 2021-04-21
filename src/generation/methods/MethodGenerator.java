@@ -38,12 +38,13 @@ public abstract class MethodGenerator {
         currentIndent--;
     }
 
-    private void openScope(String line) {
+    public void openScope(String line) {
         assert writeable: "Cannot edit preferences after call to generate()";
 
         addLine(line);
         currentIndent++;
     }
+
 
     public void addIf(String condition) {
         openScope(String.format("if %s:", condition));

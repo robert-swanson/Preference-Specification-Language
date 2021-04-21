@@ -15,10 +15,11 @@ def validatePlan():
     validator.assertEquals(evaluator.totalCreditsGreaterThanEqualToCourseNumber(200), 6, "expected 6 credits")
     validator.assertEquals(evaluator.totalCoursesGreaterThanEqualToCourseNumber(200), 2, "expected 2 courses")
 
-    if evaluator.contextStack.subcontext(lambda contextIn: PlanEvaluator.courseNameInContext(contextIn, "COS 120")):
+    if evaluator.contextStack.subcontext(lambda: evaluator.courseName("COS 120") and (PlanEvaluator.courseName(evaluator, "COS 121") or PlanEvaluator.courseName(evaluator, "COS 241"))):
         # print(evaluator.contextStack.currentContext())
         # Do context things
         evaluator.contextStack.popContext()
+
 
     if validator.isValid:
         print("Valid Plan")
@@ -33,7 +34,7 @@ def scorePlan(diagnostics=False):
     scorer.scoreBoolean(evaluator.courseName("COS 121"), MODERATELY, "COS 121")
     scorer.scoreOptimum(evaluator.averageStartTime(), MODERATELY, "Prefer Start 9:00 AM",ut.armyTimeToMinsSinceMidnight(900), leftWorstDeviance=1, rightLowerQuartileDeviance=120)
 
-    if evaluator.contextStack.subcontext(lambda contextIn: PlanEvaluator.courseNameInContext(contextIn, "COS 120")):
+    if evaluator.contextStack.subcontext(lambda: evaluator.courseName("COS 120")):
         scorer.scoreSigmoid(evaluator.totalCredits(), STRONGLY, "Less classes with COS 120", lowerQuartile=17, upperQuartile=13)
         evaluator.contextStack.popContext()
 

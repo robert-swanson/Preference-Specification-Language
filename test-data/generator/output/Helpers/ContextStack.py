@@ -15,10 +15,12 @@ class ContextStack:
         contextOut = copy.deepcopy(self.currentContext())
         emptyContext = True
         for term in self.currentContext()['terms']:
-            if not conditionFunction(self.contextFromTerm(term)):
+            self.pushContext(self.contextFromTerm(term))
+            if not conditionFunction():
                 contextOut['terms'].remove(term)
             else:
                 emptyContext = False
+            self.popContext()
         if emptyContext:
             return False
         else:
