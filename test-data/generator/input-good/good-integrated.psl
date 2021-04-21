@@ -6,9 +6,9 @@ definitions {
 
 computerScienceBSRequirements {
 	require "COS 102".
-	require "COS 103".
+	require not "COS 103".
 	require "COS 120".
-	require "COS 121".
+	require "COS 121", "COS 333".
 
 	require 1 of "COS 311", "COS 321".
 	require 2 of "COS 381", "COS 421", "COS 436".
