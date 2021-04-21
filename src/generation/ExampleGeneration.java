@@ -3,6 +3,8 @@ package generation;
 import generation.classes.Constraint;
 import generation.classes.EvaluatorGenerator;
 import generation.classes.RequireableConstraint;
+import generation.classes.Scope;
+import generation.conditions.Condition;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -23,13 +25,27 @@ public class ExampleGeneration {
         Constraint earlierClasses = Constraint.earlierClasses();
         Constraint laterClasses = Constraint.laterClasses();
 
+        Condition cos120Condition = new Condition(EvaluatorGenerator.courseNameIn("COS 120"));
+        Condition cos121Condition = new Condition(EvaluatorGenerator.courseNameIn("COS 121"));
+        Condition cos143Condition = new Condition(EvaluatorGenerator.courseNameIn("COS 143"));
+        Condition combinedCondition = cos120Condition.and(cos121Condition.or(cos143Condition));
+        Scope ifBlock = Scope.ifBlock(combinedCondition, "COS 120 and one of COS 121 or COS 143");
+        Scope whenBlock = Scope.whenBlock(combinedCondition, "COS 120 and one of COS 121 or COS 143");
+
+
         // Requirements
         courseName.require();
         nCourseNames.require();
         lBeforeR.require();
 
+        ifBlock.require();
         nCredits.require();
+        ifBlock.close();
+
+        whenBlock.require();
         nCourses.require();
+        whenBlock.close();
+
         nCreditsGE.require();
 
         // Preferences
@@ -37,8 +53,14 @@ public class ExampleGeneration {
         nCourseNames.prefer(10.0);
         lBeforeR.prefer(10.0);
 
+        ifBlock.prefer();
         nCredits.prefer(3.0);
+        ifBlock.close();
+
+        whenBlock.prefer();
         nCourses.prefer(4.2);
+        whenBlock.close();
+
         nCreditsGE.prefer(18.0);
 
         earlierClasses.prefer(3.0);
