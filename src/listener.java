@@ -1,4 +1,5 @@
 import generation.PythonGenerator;
+import generation.classes.Constraint;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -10,15 +11,14 @@ import java.io.File;
 import java.io.FileWriter;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Hashtable;
+import java.util.*;
 
 
 public class listener extends PSLGrammarBaseListener {
     Hashtable<String, Integer> priorities = new Hashtable<>();
     boolean isRequired = true;
     String[] nameList;
+
 
     @Override public void enterStart(PSLGrammarParser.StartContext ctx) { }
 
@@ -102,54 +102,106 @@ public class listener extends PSLGrammarBaseListener {
 
 
     @Override public void enterConstraint(PSLGrammarParser.ConstraintContext ctx) {
-        // make a bool flag that says whether the statement is a require or not (thus being a prefer) and call
-        // constraint methods from here. If doing this, then the various if's to see which constraint is being used should be done here
-
-        // or determining which constraint can be done here and assigned to a variable, which is then tested in the prefer or required
-
-        // or maybe reach down into children nodes from prefer / require and determine type of constraint from there
     }
 
     @Override public void exitConstraint(PSLGrammarParser.ConstraintContext ctx) {
+        Constraint constraint;
         if (isRequired) { // call required things
             if (ctx.NUM() != null) {
-                if (ctx.OF() != null) {
-//                    NUM OF courseNameList // X of courses
-                    System.out.println("num of "+Arrays.toString(nameList));
+                if (ctx.OF() != null) { // done
+                    ArrayList<String> list = new ArrayList<>();
+                    Collections.addAll(list, nameList);
+                    if (ctx.NOT() != null) { // find the right thing here
+                        Constraint.nCourseNames(Integer.parseInt(ctx.NUM().toString()), list).require(); //but NOT
+                    } else {
+                        constraint = Constraint.nCourseNames(Integer.parseInt(ctx.NUM().toString()), list);
+                    }
+                    System.out.println("num of "+ Arrays.toString(nameList));
                 } else if (ctx.UPPER() != null) {
 //                    NUM UPPER DIVISION credit_hours // upper division hours
+                    if (ctx.NOT() != null) { // find the right thing here
+
+                    } else {
+
+                    }
                 } else {
 //                    NUM credit_hours // creditHours
+                    if (ctx.NOT() != null) { // find the right thing here
+
+                    } else {
+
+                    }
                 }
             } else if (ctx.TAKING() != null) {
 //                TAKING courseNameList BEFORE courseName // prereqs
+                if (ctx.NOT() != null) { // find the right thing here
+
+                } else {
+
+                }
             } else if (ctx.LATER() != null) {
 //                LATER course_classes
+                if (ctx.NOT() != null) { // find the right thing here
+
+                } else {
+//                    Constraint.laterClasses();
+                }
             } else if (ctx.EARLIER() != null) {
 //                EARLIER course_classes
+                if (ctx.NOT() != null) { // find the right thing here
+
+                } else {
+
+                }
             } else if (ctx.MORE_() != null) {
                 if (ctx.course_classes() != null) {
                     //courses
+                    if (ctx.NOT() != null) { // find the right thing here
+
+                    } else {
+
+                    }
                 } else {
                     //credits
+                    if (ctx.NOT() != null) { // find the right thing here
+
+                    } else {
+
+                    }
                 }
             } else if (ctx.LESS() != null) {
                 if (ctx.course_classes() != null) {
                     //courses
+                    if (ctx.NOT() != null) { // find the right thing here
+
+                    } else {
+
+                    }
                 } else {
                     //credits
+                    if (ctx.NOT() != null) { // find the right thing here
+
+                    } else {
+
+                    }
                 }
             } else if (ctx.NOT() != null) {
                 //do something here?
                 System.out.print("NOT!");
-            } else {
-                //coursenamelist
-                // call nCourseNames and pass in listLength as N
+            } else { //done
+                ArrayList<String> list = new ArrayList<>();
+                Collections.addAll(list, nameList);
+                if (ctx.NOT() != null) { // find the right thing here
+                    Constraint.nCourseNames(list.size(), list).require(); //but NOT
+                } else {
+                    Constraint.nCourseNames(list.size(), list).require();
+                }
                 System.out.println(Arrays.toString(nameList));
             }
         } else { // call prefer things
 
         }
+
     }
 
 
