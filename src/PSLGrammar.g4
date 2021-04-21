@@ -11,38 +11,36 @@ statement: require
     | when;
 
 priority: PRIORITY NAME NUM PERIOD;
-require: REQUIRE constraint PERIOD;
-prefer: PREFER NAME constraint PERIOD;
+require: REQUIRE NOT? rConstraint PERIOD;
+prefer: PREFER NAME NOT? pConstraint PERIOD;
 
-if_: IF condition THEN body otherwiseIf* otherwise?;
-otherwiseIf: OTHERWISE IF condition THEN body;
+if_: IF NOT? condition THEN body otherwiseIf* otherwise?;
+otherwiseIf: OTHERWISE IF NOT? condition THEN body;
 otherwise: OTHERWISE body;
 
 when: WHEN condition body;
 
 condition: TAKING STRING // course
-    | NOT condition // not
     | OPENPAREND condition AND condition CLOSEPAREND
     | OPENPAREND condition OR condition CLOSEPAREND
     | OPENPAREND condition CLOSEPAREND
     ;
 
-constraint:
-     TAKING? courseNameList // courses
-    | NUM credit_hours // creditHours
+rConstraint: courseNameList // courses
+    | NUM credit_hours IN semester_plan// creditHours
     | NUM OF courseNameList // X of courses
     | NUM UPPER DIVISION credit_hours // upper division hours
     | TAKING courseNameList BEFORE courseName // prereqs
+    ;
 
+pConstraint: rConstraint
     | LATER course_classes
     | EARLIER course_classes
 
-    | MORE_ course_classes
-    | LESS course_classes
-    | MORE_ credit_hours
-    | LESS credit_hours
-
-    | NOT constraint // not
+    | MORE_ course_classes IN semester_plan
+    | LESS course_classes IN semester_plan
+    | MORE_ credit_hours IN semester_plan
+    | LESS credit_hours IN semester_plan
     ;
 
 
@@ -50,6 +48,7 @@ courseNameList: (STRING ',')* STRING;
 courseName: STRING;
 credit_hours: CREDITS | HOURS;
 course_classes: COURSES | CLASSES;
+semester_plan: SEMESTER | PLAN;
 
 // Statement Types
 PRIORITY: 'priority';
@@ -70,6 +69,7 @@ BEFORE: 'before';
 
 CREDITS: 'credits';
 HOURS: 'hours';
+IN: 'in';
 
 UPPER: 'upper';
 DIVISION: 'division';
@@ -81,7 +81,8 @@ EARLIER: 'earlier';
 LESS: 'less';
 MORE_: 'more';
 
-
+SEMESTER: 'semester';
+PLAN: 'plan';
 CLASSES: 'classes';
 COURSES: 'courses';
 NOT: 'not';

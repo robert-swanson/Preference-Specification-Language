@@ -1,4 +1,4 @@
-// Generated from /Users/robertswanson/dev/dsl/src/PSLGrammar.g4 by ANTLR 4.9.1
+// Generated from /Users/elizabethyeiter/Desktop/COS 382/dsl/src/PSLGrammar.g4 by ANTLR 4.9.1
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
 /**
@@ -82,11 +82,17 @@ public interface PSLGrammarVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitCondition(PSLGrammarParser.ConditionContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link PSLGrammarParser#constraint}.
+	 * Visit a parse tree produced by {@link PSLGrammarParser#rConstraint}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitConstraint(PSLGrammarParser.ConstraintContext ctx);
+	T visitRConstraint(PSLGrammarParser.RConstraintContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link PSLGrammarParser#pConstraint}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitPConstraint(PSLGrammarParser.PConstraintContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link PSLGrammarParser#courseNameList}.
 	 * @param ctx the parse tree
@@ -111,4 +117,10 @@ public interface PSLGrammarVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitCourse_classes(PSLGrammarParser.Course_classesContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link PSLGrammarParser#semester_plan}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSemester_plan(PSLGrammarParser.Semester_planContext ctx);
 }

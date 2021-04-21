@@ -1,4 +1,4 @@
-// Generated from /Users/robertswanson/dev/dsl/src/PSLGrammar.g4 by ANTLR 4.9.1
+// Generated from /Users/elizabethyeiter/Desktop/COS 382/dsl/src/PSLGrammar.g4 by ANTLR 4.9.1
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
 import java.io.IOException;
@@ -129,15 +129,25 @@ public interface PSLGrammarListener extends ParseTreeListener {
 	 */
 	void exitCondition(PSLGrammarParser.ConditionContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link PSLGrammarParser#constraint}.
+	 * Enter a parse tree produced by {@link PSLGrammarParser#rConstraint}.
 	 * @param ctx the parse tree
 	 */
-	void enterConstraint(PSLGrammarParser.ConstraintContext ctx);
+	void enterRConstraint(PSLGrammarParser.RConstraintContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link PSLGrammarParser#constraint}.
+	 * Exit a parse tree produced by {@link PSLGrammarParser#rConstraint}.
 	 * @param ctx the parse tree
 	 */
-	void exitConstraint(PSLGrammarParser.ConstraintContext ctx);
+	void exitRConstraint(PSLGrammarParser.RConstraintContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link PSLGrammarParser#pConstraint}.
+	 * @param ctx the parse tree
+	 */
+	void enterPConstraint(PSLGrammarParser.PConstraintContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link PSLGrammarParser#pConstraint}.
+	 * @param ctx the parse tree
+	 */
+	void exitPConstraint(PSLGrammarParser.PConstraintContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link PSLGrammarParser#courseNameList}.
 	 * @param ctx the parse tree
@@ -178,4 +188,14 @@ public interface PSLGrammarListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitCourse_classes(PSLGrammarParser.Course_classesContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link PSLGrammarParser#semester_plan}.
+	 * @param ctx the parse tree
+	 */
+	void enterSemester_plan(PSLGrammarParser.Semester_planContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link PSLGrammarParser#semester_plan}.
+	 * @param ctx the parse tree
+	 */
+	void exitSemester_plan(PSLGrammarParser.Semester_planContext ctx);
 }
