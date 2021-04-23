@@ -23,7 +23,7 @@ public class EvaluatorGenerator {
         return "evaluator.totalCourses()";
     }
 
-    public static String totalCreditGreaterThanEqualToCourseNumber(int courseNumber) {
+    public static String totalCreditsGreaterThanEqualToCourseNumber(int courseNumber) {
         return String.format("evaluator.totalCreditsGreaterThanEqualToCourseNumber(%d)", courseNumber);
     }
 

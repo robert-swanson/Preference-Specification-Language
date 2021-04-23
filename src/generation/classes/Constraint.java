@@ -67,66 +67,6 @@ public class Constraint {
         return new RequireableConstraint(requirementGenerator, preferenceGenerator);
     }
 
-    /*
-    public static RequireableConstraint nCreditsForSemester(int n) {
-        return nCreditsConstraintGreaterThanEqualToCourseNumberWithDev(n, 0, 1.0, String.format("%d credits required for semester", n), String.format("%d credits preferred for semester", n));
-    }
-
-    public static RequireableConstraint nCreditsForPlan(int n) {
-        return nCreditsConstraintGreaterThanEqualToCourseNumberWithDev(n, 0, 10.0, String.format("%d credits required for plan", n), String.format("%d credits preferred for plan", n));
-    }
-
-    public static RequireableConstraint nCoursesForSemester(int n) {
-        return nCoursesConstraintGreaterThanEqualToWithDev(n, 0, 1.0, String.format("%d courses required for semester", n), String.format("%d courses preferred for semester", n));
-    }
-
-    public static RequireableConstraint nCoursesForPlan(int n) {
-        return nCoursesConstraintGreaterThanEqualToWithDev(n, 0, 10.0, String.format("%d courses required for plan", n), String.format("%d courses preferred for plan", n));
-    }
-
-    public static RequireableConstraint nCreditsGreaterThanEqualForSemester(int n, int courseNumber) {
-        return nCreditsConstraintGreaterThanEqualToCourseNumberWithDev(n, courseNumber, 1.0, String.format("%d credits over level %d required for semester", n, courseNumber), String.format("%d credits over level %d preferred for semester", n, courseNumber));
-    }
-
-    public static RequireableConstraint nCreditsGreaterThanEqualForPlan(int n, int courseNumber) {
-        return nCreditsConstraintGreaterThanEqualToCourseNumberWithDev(n, courseNumber, 10.0, String.format("%d credits over level %d required for plan", n, courseNumber), String.format("%d credits over level %d preferred for plan", n, courseNumber));
-    }
-
-    public static RequireableConstraint nCoursesGreaterThanEqualForSemester(int n, int courseNumber) {
-        return nCoursesConstraintGreaterThanEqualToWithDev(n, courseNumber, 1.0, String.format("%d courses over level %d required for semester", n, courseNumber), String.format("%d courses over level %d preferred for semester", n, courseNumber));
-    }
-
-    public static RequireableConstraint nCoursesGreaterThanEqualForPlan(int n, int courseNumber) {
-        return nCoursesConstraintGreaterThanEqualToWithDev(n, courseNumber, 10.0, String.format("%d courses over level %d required for plan", n, courseNumber), String.format("%d courses preferred for plan", n, courseNumber));
-    }
-
-    private static RequireableConstraint nCreditsConstraintGreaterThanEqualToCourseNumberWithDev(int n, int courseNumber, double deviation, String requirementDesc, String preferenceDesc) {
-        RequirementGenerator requirementGenerator;
-        PreferenceGenerator preferenceGenerator;
-        if (courseNumber > 0) {
-            requirementGenerator = RequirementGenerator.assertEquals(EvaluatorGenerator.totalCreditGreaterThanEqualToCourseNumber(courseNumber), Integer.toString(n), requirementDesc);
-            preferenceGenerator = PreferenceGenerator.scoreOptimum(EvaluatorGenerator.totalCreditGreaterThanEqualToCourseNumber(courseNumber), preferenceDesc, Integer.toString(n), null, deviation, null, null, null, null);
-        } else {
-            requirementGenerator = RequirementGenerator.assertEquals(EvaluatorGenerator.totalCredits(), Integer.toString(n), requirementDesc);
-            preferenceGenerator = PreferenceGenerator.scoreOptimum(EvaluatorGenerator.totalCredits(), preferenceDesc, Integer.toString(n), null, deviation, null, null, null, null);
-        }
-        return new RequireableConstraint(requirementGenerator, preferenceGenerator);
-    }
-
-    private static RequireableConstraint nCoursesConstraintGreaterThanEqualToWithDev(int n, int courseNumber, double deviation, String requirementDesc, String preferenceDesc) {
-        RequirementGenerator requirementGenerator;
-        PreferenceGenerator preferenceGenerator;
-        if (courseNumber > 0) {
-            requirementGenerator = RequirementGenerator.assertEquals(EvaluatorGenerator.totalCoursesGreaterThanEqualToCourseNumber(courseNumber), Integer.toString(n), requirementDesc);
-            preferenceGenerator = PreferenceGenerator.scoreOptimum(EvaluatorGenerator.totalCoursesGreaterThanEqualToCourseNumber(courseNumber), preferenceDesc, Integer.toString(n), null, deviation, null, null, null, null);
-        } else {
-            requirementGenerator = RequirementGenerator.assertEquals(EvaluatorGenerator.totalCourses(), Integer.toString(n), requirementDesc);
-            preferenceGenerator = PreferenceGenerator.scoreOptimum(EvaluatorGenerator.totalCourses(), preferenceDesc, Integer.toString(n), null, deviation, null, null, null, null);
-        }
-        return new RequireableConstraint(requirementGenerator, preferenceGenerator);
-    }
-     */
-
     final static Double TEN_AM = 600.0, NOON = 720.0, TWO_PM = 840.0;
 
     public static Constraint earlierClasses() {

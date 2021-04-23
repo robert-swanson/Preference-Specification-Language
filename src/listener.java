@@ -1,5 +1,7 @@
 import generation.PythonGenerator;
 import generation.classes.Constraint;
+import generation.classes.EvaluatorGenerator;
+import generation.classes.RequireableConstraint;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -13,13 +15,15 @@ import java.util.*;
 
 public class listener extends PSLGrammarBaseListener {
     Hashtable<String, Integer> priorities = new Hashtable<>();
-    boolean isRequired = true;
     String[] nameList;
 
 
-    @Override public void enterStart(PSLGrammarParser.StartContext ctx) { }
+    @Override public void enterStart(PSLGrammarParser.StartContext ctx) {
+//        System.out.print("here");
+    }
 
     @Override public void exitStart(PSLGrammarParser.StartContext ctx) throws IOException{
+//        System.out.print("hereeee");
         PythonGenerator.generate("test-data/generator/output/generated.py"); // <-- Generation
     }
 
@@ -46,23 +50,14 @@ public class listener extends PSLGrammarBaseListener {
     }
 
 
-    @Override public void enterRequire(PSLGrammarParser.RequireContext ctx) {
-        isRequired = true;
-    }
+    @Override public void enterRequire(PSLGrammarParser.RequireContext ctx) { }
 
     @Override public void exitRequire(PSLGrammarParser.RequireContext ctx) { }
 
 
-    @Override public void enterPrefer(PSLGrammarParser.PreferContext ctx) {
-        isRequired = false;
-    }
+    @Override public void enterPrefer(PSLGrammarParser.PreferContext ctx) { }
 
-    @Override public void exitPrefer(PSLGrammarParser.PreferContext ctx) {
-        if (! priorities.containsKey(ctx.NAME().toString())) {
-            System.out.println(ctx.NAME().toString() + " is not a valid Priority");
-            System.exit(1);
-        }
-    }
+    @Override public void exitPrefer(PSLGrammarParser.PreferContext ctx) { }
 
 
     @Override public void enterIf_(PSLGrammarParser.If_Context ctx) { }
@@ -94,121 +89,98 @@ public class listener extends PSLGrammarBaseListener {
     }
 
     @Override public void exitCondition(PSLGrammarParser.ConditionContext ctx) {
-        // look at the things on the stack! made above
+        // look at the things on the stack made above
     }
 
 
     @Override public void enterRConstraint(PSLGrammarParser.RConstraintContext ctx) { }
 
-    @Override public void exitRConstraint(PSLGrammarParser.RConstraintContext ctx) { }
+    @Override public void exitRConstraint(PSLGrammarParser.RConstraintContext ctx) {
+        Constraint constraint = null;
+        if (ctx.NUM() != null) {
+            int number = Integer.parseInt(ctx.NUM().toString());
+            if (ctx.OF() != null) { // done
+                ArrayList<String> list = new ArrayList<>();
+                Collections.addAll(list, nameList);
+                if (number > list.size()) {
+                    System.out.println("ERROR: the number of required classes exceeds the number in the list");
+                    System.exit(1);
+                }
+                constraint = Constraint.nCourseNames(number, list);
+                System.out.println("num of "+ Arrays.toString(nameList));
+            } else if (ctx.UPPER() != null) { //  NUM UPPER DIVISION credit_hours // upper division hours
+                constraint = Constraint.equalTo(EvaluatorGenerator.totalCreditsGreaterThanEqualToCourseNumber(300),
+                        number, 0, String.format("%d credits", number));
+            } else { //  NUM credit_hours
+                constraint = Constraint.equalTo(EvaluatorGenerator.totalCredits(), number, 0,
+                        String.format("%d credits", number));
+            }
+        } else if (ctx.TAKING() != null) { // TAKING courseNameList BEFORE courseName, prereqs
+            constraint = Constraint.leftBeforeRight(  // only works well with one course in list, maybe loop over children?
+                    ctx.courseNameList().children.toString().replaceAll("(\"|,)", ""),
+                    ctx.courseName().getChild(0).toString().replaceAll("\"", "")
+
+            );
+
+        } else { //done
+            ArrayList<String> list = new ArrayList<>();
+            Collections.addAll(list, nameList);
+            constraint = Constraint.nCourseNames(list.size(), list);
+//            System.out.println(Arrays.toString(nameList));
+        }
+
+        if (ctx.getParent() instanceof PSLGrammarParser.PConstraintContext) {
+            PSLGrammarParser.PreferContext pctx = (PSLGrammarParser.PreferContext) ctx.getParent().getParent();
+            int weight = 0;
+            if (! priorities.containsKey(pctx.NAME().toString())) {
+                System.out.println("ERROR: " + pctx.NAME().toString() + " is not a valid Priority");
+                System.exit(1);
+            } else {
+                weight = priorities.get(pctx.NAME().toString());
+            }
+            if (pctx.NOT() != null) {
+                // negate statement - there IS a NOT
+                constraint.prefer(weight); // come back to this
+            } else {
+                // statement as normal - there is NOT a NOT
+                constraint.prefer(weight); // come back to this
+            }
+        } else {
+            PSLGrammarParser.RequireContext rctx = (PSLGrammarParser.RequireContext) ctx.getParent();
+            if (rctx.NOT() != null) {
+                // negate statement - there IS a NOT
+                ((RequireableConstraint) constraint).require(); // come back to this
+            } else {
+                // statement as normal - there is NOT a NOT
+                ((RequireableConstraint) constraint).require();
+            }
+        }
+    }
 
 
     @Override public void enterPConstraint(PSLGrammarParser.PConstraintContext ctx) { }
 
-    @Override public void exitPConstraint(PSLGrammarParser.PConstraintContext ctx) { }
-
-
-//    @Override public void enterConstraint(PSLGrammarParser.ConstraintContext ctx) { }
-
-//    @Override public void exitConstraint(PSLGrammarParser.ConstraintContext ctx) {
-//        Constraint constraint;
-//        if (isRequired) { // call required things
-//            if (ctx.NUM() != null) {
-//                if (ctx.OF() != null) { // done
-//                    ArrayList<String> list = new ArrayList<>();
-//                    Collections.addAll(list, nameList);
-//                    if (ctx.NOT() != null) { // find the right thing here
-//                        Constraint.nCourseNames(Integer.parseInt(ctx.NUM().toString()), list).require(); //but NOT
-//                    } else {
-//                        constraint = Constraint.nCourseNames(Integer.parseInt(ctx.NUM().toString()), list);
-//                    }
-//                    System.out.println("num of "+ Arrays.toString(nameList));
-//                } else if (ctx.UPPER() != null) {
-////                    NUM UPPER DIVISION credit_hours // upper division hours
-//                    if (ctx.NOT() != null) { // find the right thing here
-//
-//                    } else {
-//
-//                    }
-//                } else {
-////                    NUM credit_hours // creditHours
-//                    if (ctx.NOT() != null) { // find the right thing here
-//
-//                    } else {
-//
-//                    }
-//                }
-//            } else if (ctx.TAKING() != null) {
-////                TAKING courseNameList BEFORE courseName // prereqs
-//                if (ctx.NOT() != null) { // find the right thing here
-//
-//                } else {
-//
-//                }
-//            } else if (ctx.LATER() != null) {
-////                LATER course_classes
-//                if (ctx.NOT() != null) { // find the right thing here
-//
-//                } else {
-////                    Constraint.laterClasses();
-//                }
-//            } else if (ctx.EARLIER() != null) {
-////                EARLIER course_classes
-//                if (ctx.NOT() != null) { // find the right thing here
-//
-//                } else {
-//
-//                }
-//            } else if (ctx.MORE_() != null) {
-//                if (ctx.course_classes() != null) {
-//                    //courses
-//                    if (ctx.NOT() != null) { // find the right thing here
-//
-//                    } else {
-//
-//                    }
-//                } else {
-//                    //credits
-//                    if (ctx.NOT() != null) { // find the right thing here
-//
-//                    } else {
-//
-//                    }
-//                }
-//            } else if (ctx.LESS() != null) {
-//                if (ctx.course_classes() != null) {
-//                    //courses
-//                    if (ctx.NOT() != null) { // find the right thing here
-//
-//                    } else {
-//
-//                    }
-//                } else {
-//                    //credits
-//                    if (ctx.NOT() != null) { // find the right thing here
-//
-//                    } else {
-//
-//                    }
-//                }
-//            } else if (ctx.NOT() != null) {
-//                //do something here?
-//                System.out.print("NOT!");
-//            } else { //done
-//                ArrayList<String> list = new ArrayList<>();
-//                Collections.addAll(list, nameList);
-//                if (ctx.NOT() != null) { // find the right thing here
-//                    Constraint.nCourseNames(list.size(), list).require(); //but NOT
-//                } else {
-//                    Constraint.nCourseNames(list.size(), list).require();
-//                }
-//                System.out.println(Arrays.toString(nameList));
-//            }
-//        } else { // call prefer things
-//
-//        }
-//
-//    }
+    @Override public void exitPConstraint(PSLGrammarParser.PConstraintContext ctx) {
+        Constraint constraint;
+        if (ctx.LATER() != null) {
+//                LATER course_classes
+//                    Constraint.laterClasses();
+        } else if (ctx.EARLIER() != null) {
+//                EARLIER course_classes
+        } else if (ctx.MORE_() != null) {
+            if (ctx.course_classes() != null) {
+                //courses
+            } else {
+                //credits
+            }
+        } else if (ctx.LESS() != null) {
+            if (ctx.course_classes() != null) {
+                //courses
+            } else {
+                //credits
+            }
+        }
+    }
 
 
     @Override public void enterCourseNameList(PSLGrammarParser.CourseNameListContext ctx) { }

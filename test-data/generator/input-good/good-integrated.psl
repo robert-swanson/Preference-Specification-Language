@@ -20,14 +20,14 @@ computerScienceBSRequirements {
 }
 
 studentPreferences {
-	prefer strongly "COS 121".
+	prefer moderately "COS 999".
 	prefer moderately later classes.
 	
 	if taking "COS 436" then {
 		prefer slightly "COS 381".
-		prefer slightly not taking "COS 421".
+		prefer slightly not  "COS 421".
 	} otherwise {
-		prefer slightly not taking "COS 421".
+		prefer slightly not  "COS 421".
 	}
 
 	when taking "COS 381" {

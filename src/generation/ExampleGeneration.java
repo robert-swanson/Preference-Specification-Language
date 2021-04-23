@@ -20,7 +20,7 @@ public class ExampleGeneration {
         RequireableConstraint nCredits = Constraint.equalTo(EvaluatorGenerator.totalCredits(), 15, 2.0, String.format("%d credits", 15));
         RequireableConstraint nCourses = Constraint.equalTo(EvaluatorGenerator.totalCourses(), 5, 1.0, String.format("%d courses", 5));
 
-        RequireableConstraint nCreditsGE = Constraint.greaterThan(EvaluatorGenerator.totalCreditGreaterThanEqualToCourseNumber(200), 80.0, 5, String.format("More than %d credits over %d", 80, 200));
+        RequireableConstraint nCreditsGE = Constraint.greaterThan(EvaluatorGenerator.totalCreditsGreaterThanEqualToCourseNumber(200), 80.0, 5, String.format("More than %d credits over %d", 80, 200));
 
         Constraint earlierClasses = Constraint.earlierClasses();
         Constraint laterClasses = Constraint.laterClasses();
