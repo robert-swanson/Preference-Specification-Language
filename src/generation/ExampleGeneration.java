@@ -4,7 +4,7 @@ import generation.classes.Constraint;
 import generation.classes.EvaluatorGenerator;
 import generation.classes.RequireableConstraint;
 import generation.classes.Scope;
-import generation.conditions.Condition;
+import generation.classes.Condition;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -12,18 +12,19 @@ import java.util.Arrays;
 
 public class ExampleGeneration {
     public static void main(String[] args) throws IOException {
+        boolean invert = true;
         // Constraints
-        RequireableConstraint courseName = Constraint.courseName("COS 120");
-        RequireableConstraint nCourseNames = Constraint.nCourseNames(2, new ArrayList<String>(Arrays.asList("COS 120", "COS 121", "COS 143")));
-        RequireableConstraint lBeforeR = Constraint.leftBeforeRight("COS 120", "COS 121");
+        RequireableConstraint courseName = Constraint.courseName("COS 120", invert);
+        RequireableConstraint nCourseNames = Constraint.nCourseNames(2, new ArrayList<String>(Arrays.asList("COS 120", "COS 121", "COS 143")), invert);
+        RequireableConstraint lBeforeR = Constraint.leftBeforeRight("COS 120", "COS 121", invert);
 
-        RequireableConstraint nCredits = Constraint.equalTo(EvaluatorGenerator.totalCredits(), 15, 2.0, String.format("%d credits", 15));
-        RequireableConstraint nCourses = Constraint.equalTo(EvaluatorGenerator.totalCourses(), 5, 1.0, String.format("%d courses", 5));
+        RequireableConstraint nCredits = Constraint.equalTo(EvaluatorGenerator.totalCredits(), 15, 2.0, invert, String.format("%d credits", 15) );
+        RequireableConstraint nCourses = Constraint.equalTo(EvaluatorGenerator.totalCourses(), 5, 1.0, invert, String.format("%d courses", 5));
 
-        RequireableConstraint nCreditsGE = Constraint.greaterThan(EvaluatorGenerator.totalCreditsGreaterThanEqualToCourseNumber(200), 80.0, 5, String.format("More than %d credits over %d", 80, 200));
+        RequireableConstraint nCreditsGE = Constraint.greaterThan(EvaluatorGenerator.totalCreditsGreaterThanEqualToCourseNumber(200), 80.0, 5, invert, String.format("More than %d credits over %d", 80, 200));
 
-        Constraint earlierClasses = Constraint.earlierClasses();
-        Constraint laterClasses = Constraint.laterClasses();
+        Constraint earlierClasses = Constraint.earlierClasses(invert);
+        Constraint laterClasses = Constraint.laterClasses(invert);
 
         Condition cos120Condition = new Condition(EvaluatorGenerator.courseNameIn("COS 120"));
         Condition cos121Condition = new Condition(EvaluatorGenerator.courseNameIn("COS 121"));

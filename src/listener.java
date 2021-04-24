@@ -96,6 +96,7 @@ public class listener extends PSLGrammarBaseListener {
     @Override public void enterRConstraint(PSLGrammarParser.RConstraintContext ctx) { }
 
     @Override public void exitRConstraint(PSLGrammarParser.RConstraintContext ctx) {
+        boolean invert = false;
         Constraint constraint = null;
         if (ctx.NUM() != null) {
             int number = Integer.parseInt(ctx.NUM().toString());
@@ -106,26 +107,26 @@ public class listener extends PSLGrammarBaseListener {
                     System.out.println("ERROR: the number of required classes exceeds the number in the list");
                     System.exit(1);
                 }
-                constraint = Constraint.nCourseNames(number, list);
+                constraint = Constraint.nCourseNames(number, list, invert);
                 System.out.println("num of "+ Arrays.toString(nameList));
             } else if (ctx.UPPER() != null) { //  NUM UPPER DIVISION credit_hours // upper division hours
                 constraint = Constraint.equalTo(EvaluatorGenerator.totalCreditsGreaterThanEqualToCourseNumber(300),
-                        number, 0, String.format("%d credits", number));
+                        number, 0, invert, String.format("%d credits", number));
             } else { //  NUM credit_hours
-                constraint = Constraint.equalTo(EvaluatorGenerator.totalCredits(), number, 0,
+                constraint = Constraint.equalTo(EvaluatorGenerator.totalCredits(), number, 0, invert,
                         String.format("%d credits", number));
             }
         } else if (ctx.TAKING() != null) { // TAKING courseNameList BEFORE courseName, prereqs
             constraint = Constraint.leftBeforeRight(  // only works well with one course in list, maybe loop over children?
                     ctx.courseNameList().children.toString().replaceAll("(\"|,)", ""),
-                    ctx.courseName().getChild(0).toString().replaceAll("\"", "")
-
+                    ctx.courseName().getChild(0).toString().replaceAll("\"", ""),
+                    invert
             );
 
         } else { //done
             ArrayList<String> list = new ArrayList<>();
             Collections.addAll(list, nameList);
-            constraint = Constraint.nCourseNames(list.size(), list);
+            constraint = Constraint.nCourseNames(list.size(), list, invert);
 //            System.out.println(Arrays.toString(nameList));
         }
 

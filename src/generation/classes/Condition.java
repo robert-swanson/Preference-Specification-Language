@@ -1,6 +1,4 @@
-package generation.conditions;
-
-import java.util.ArrayList;
+package generation.classes;
 
 public class Condition {
     private String python;

@@ -25,23 +25,16 @@ public class PreferenceGenerator {
         PythonGenerator.getScorePlanGenerator().addLine(finalPython);
     }
 
-    public static PreferenceGenerator scoreBoolean(String value, String preferenceName) {
-        return new PreferenceGenerator("scorer.scoreBoolean(%s, %s, '%s')", value, new Object[]{preferenceName});
+    public static PreferenceGenerator scoreBoolean(String value, String preferenceName, boolean invert) {
+        return new PreferenceGenerator("scorer.scoreBoolean(%s, %s, '%s', invert=%s)", value, new Object[]{preferenceName, invert ? "True" : "False"});
     }
 
-//    public static PreferenceGenerator scoreSigmoid(String value, String preferenceName, Double worstBound, Double bestBound, Double lowerQuartile, Double upperQuartile) {
-//        return new PreferenceGenerator("scorer.scoreSigmoid(%s, %s, '%s', worstBound=%s, bestBound=%s, lowerQuartile=%s, upperQuartile=%s)", value, new Object[]{preferenceName, dts(worstBound), dts(bestBound), dts(lowerQuartile), dts(upperQuartile)});
-//    }
-    public static PreferenceGenerator scoreSigmoid(String value, String preferenceName, SigmoidParameters parameters) {
-        return new PreferenceGenerator("scorer.scoreSigmoid(%s, %s, '%s', worstBound=%s, bestBound=%s, lowerQuartile=%s, upperQuartile=%s)", value, new Object[]{preferenceName, parameters.worstBound(), parameters.bestBound(), parameters.lowerQuartile(), parameters.upperQuartile()});
+    public static PreferenceGenerator scoreSigmoid(String value, String preferenceName, SigmoidParameters parameters, boolean invert) {
+        return new PreferenceGenerator("scorer.scoreSigmoid(%s, %s, '%s', invert=%s, worstBound=%s, bestBound=%s, lowerQuartile=%s, upperQuartile=%s)", value, new Object[]{preferenceName, invert ? "True" : "False", parameters.worstBound(), parameters.bestBound(), parameters.lowerQuartile(), parameters.upperQuartile()});
     }
 
-//    public static PreferenceGenerator scoreOptimum(String value, String preferenceName, String optimum, Double worstDeviance, Double lowerQuartileDeviance, Double leftWorstDeviance, Double leftLowerQuartileDeviance, Double rightWorstDeviance, Double rightLowerQuartileDeviance ) {
-//        return new PreferenceGenerator("scorer.scoreOptimum(%s, %s, '%s', %s, worstDeviance=%s, lowerQuartileDeviance=%s, leftWorstDeviance=%s, leftLowerQuartileDeviance=%s, rightWorstDeviance=%s, rightLowerQuartileDeviance=%s)", value, new Object[]{preferenceName, optimum, dts(worstDeviance), dts(lowerQuartileDeviance), dts(leftWorstDeviance), dts(leftLowerQuartileDeviance), dts(rightWorstDeviance), dts(rightLowerQuartileDeviance)});
-//    }
-
-    public static PreferenceGenerator scoreOptimum(String value, String preferenceName, OptimumParameters parameters) {
-        return new PreferenceGenerator("scorer.scoreOptimum(%s, %s, '%s', %s, worstDeviance=%s, lowerQuartileDeviance=%s, leftWorstDeviance=%s, leftLowerQuartileDeviance=%s, rightWorstDeviance=%s, rightLowerQuartileDeviance=%s)", value, new Object[]{preferenceName, parameters.optimum(), parameters.worstDeviance(), parameters.lowerQuartileDeviance(), parameters.leftWorstDeviance(),  parameters.leftLowerQuartileDeviance(), parameters.rightWorstDeviance(), parameters.rightLowerQuartileDeviance()});
+    public static PreferenceGenerator scoreOptimum(String value, String preferenceName, OptimumParameters parameters, boolean invert) {
+        return new PreferenceGenerator("scorer.scoreOptimum(%s, %s, '%s', %s, invert=%s, worstDeviance=%s, lowerQuartileDeviance=%s, leftWorstDeviance=%s, leftLowerQuartileDeviance=%s, rightWorstDeviance=%s, rightLowerQuartileDeviance=%s)", value, new Object[]{ preferenceName, invert ? "True" : "False", parameters.optimum(), parameters.worstDeviance(), parameters.lowerQuartileDeviance(), parameters.leftWorstDeviance(),  parameters.leftLowerQuartileDeviance(), parameters.rightWorstDeviance(), parameters.rightLowerQuartileDeviance()});
     }
 
     private static String dts(Double d) {

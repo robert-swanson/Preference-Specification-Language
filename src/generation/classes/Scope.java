@@ -1,7 +1,6 @@
 package generation.classes;
 
 import generation.PythonGenerator;
-import generation.conditions.Condition;
 import generation.methods.ScorePlanGenerator;
 import generation.methods.ValidatePlanGenerator;
 

@@ -7,18 +7,17 @@ class Scorer:
     def getScore(self):
         return self.score/self.maxPossibleScore * 100
 
-    def scoreBoolean(self, value, weight, preferenceName):
+    def scoreBoolean(self, value, weight, preferenceName, invert=False):
         self.maxPossibleScore += weight
-        score = 1 if value else 0
+        score = 1 if value ^ invert else 0
 
         if self.diagnostics:
-            print("Score: {:.2f}%\tWeight: {}\tPreference Name: {}, Given: {}".format(score*100, weight, preferenceName, value))
-            # print("Score: {:.2f}\tCurrent: {:.0f} (given: val={}, weight={})".format(score, self.getScore(), value, weight))
+            print("Score: {:.2f}%\tWeight: {}\tPreference Name: {}, Given: {}, Inverted: {}".format(score*100, weight, preferenceName, value, invert))
 
         self.score += score * weight
         return score
 
-    def scoreOptimum(self, value, weight, preferenceName, optimum, worstDeviance=None, lowerQuartileDeviance=None, leftWorstDeviance=None, leftLowerQuartileDeviance=None, rightWorstDeviance=None, rightLowerQuartileDeviance=None):
+    def scoreOptimum(self, value, weight, preferenceName, optimum, invert=False, worstDeviance=None, lowerQuartileDeviance=None, leftWorstDeviance=None, leftLowerQuartileDeviance=None, rightWorstDeviance=None, rightLowerQuartileDeviance=None):
         if worstDeviance:
             assert not (lowerQuartileDeviance or leftLowerQuartileDeviance or leftWorstDeviance or rightLowerQuartileDeviance or rightWorstDeviance)
             leftWorstDeviance = worstDeviance
@@ -67,14 +66,17 @@ class Scorer:
             else:
                 raise
 
+        if invert:
+            score = 1-score
+
         if self.diagnostics:
-            print("Score: {:.2f}%\tWeight: {}\tPreference Name: {}, Given: {}, Optimum: {}".format(score*100, weight, preferenceName, value, optimum))
+            print("Score: {:.2f}%\tWeight: {}\tPreference Name: {}, Given: {}, Optimum: {} Inverted: {}".format(score*100, weight, preferenceName, value, optimum, invert))
 
         self.maxPossibleScore += weight
         self.score += score * weight
         return score*weight
 
-    def scoreSigmoid(self, value, weight, preferenceName, worstBound=None, bestBound=None, lowerQuartile=None, upperQuartile=None):
+    def scoreSigmoid(self, value, weight, preferenceName, invert=False, worstBound=None, bestBound=None, lowerQuartile=None, upperQuartile=None):
         # worstBound describes the value required to return a score of 0.25 * weight
         # bestBound describes the value required to return a score of 0.75 * weight
         # if bestBound < worstBound then the sigmoid function is reversed, giving higher scores for lower values
@@ -96,6 +98,8 @@ class Scorer:
             else:
                 score = 1 / (1 + pow(9, normalizedValue * -1))
 
+        if invert:
+            score = 1-score
 
         if self.diagnostics:
             print("Score: {:.2f}%\tWeight: {}\tPreference Name: {}, Given: {}, Upper: {}, Lower: {}".format(score*100, weight, preferenceName, value, upper, lower))
