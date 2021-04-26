@@ -17,6 +17,7 @@ public class ExampleGeneration {
         RequireableConstraint courseName = Constraint.courseName("COS 120", invert);
         RequireableConstraint nCourseNames = Constraint.nCourseNames(2, new ArrayList<String>(Arrays.asList("COS 120", "COS 121", "COS 143")), invert);
         RequireableConstraint lBeforeR = Constraint.leftBeforeRight("COS 120", "COS 121", invert);
+        RequireableConstraint lBeforeMR = Constraint.multiLeftBeforeRight(new ArrayList<String>(Arrays.asList("COS 120", "COS 143")), "COS 121", invert);
 
         RequireableConstraint nCredits = Constraint.equalTo(EvaluatorGenerator.totalCredits(), 15, 2.0, invert, String.format("%d credits", 15) );
         RequireableConstraint nCourses = Constraint.equalTo(EvaluatorGenerator.totalCourses(), 5, 1.0, invert, String.format("%d courses", 5));
@@ -38,6 +39,7 @@ public class ExampleGeneration {
         courseName.require();
         nCourseNames.require();
         lBeforeR.require();
+        lBeforeMR.require();
 
         ifBlock.require();
         nCredits.require();

@@ -67,6 +67,12 @@ public class Constraint {
         return new RequireableConstraint(requirementGenerator, preferenceGenerator);
     }
 
+    public static RequireableConstraint multiLeftBeforeRight(ArrayList<String> left, String right, boolean invert) {
+        RequirementGenerator requirementGenerator = RequirementGenerator.assertTrue(EvaluatorGenerator.violatesMultiLeftBeforeRight(left, right), String.format("Courses %s must come before course %s", left.toString(), right), invert );
+        PreferenceGenerator preferenceGenerator = PreferenceGenerator.scoreBoolean(EvaluatorGenerator.violatesMultiLeftBeforeRight(left, right), String.format("Taking courses %s before course %s", left.toString(), right), invert);
+        return new RequireableConstraint(requirementGenerator, preferenceGenerator);
+    }
+
     final static Double TEN_AM = 600.0, NOON = 720.0, TWO_PM = 840.0;
 
     public static Constraint earlierClasses(boolean invert) {

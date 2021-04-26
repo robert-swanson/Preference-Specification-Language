@@ -15,6 +15,10 @@ public class EvaluatorGenerator {
         return String.format("evaluator.violatesLeftBeforeRight('%s', '%s')", left, right);
     }
 
+    public static String violatesMultiLeftBeforeRight(ArrayList<String> left, String right) {
+        return String.format("evaluator.violatesMultiLeftBeforeRight([%s], '%s')", arrayListToPython(left), right);
+    }
+
     public static String totalCredits() {
         return "evaluator.totalCredits()";
     }
