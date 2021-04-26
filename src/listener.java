@@ -121,7 +121,7 @@ public class listener extends PSLGrammarBaseListener {
             }
         } else if (ctx.TAKING() != null) { // TAKING courseNameList BEFORE courseName, prereqs
             constraint = Constraint.leftBeforeRight(  // only works well with one course in list, maybe loop over children?
-                    ctx.courseNameList().children.toString().replaceAll("(\")", ""),
+                    ctx.courseNameList().children.toString(),//.replaceAll("(\")", ""),
                     ctx.courseName().getChild(0).toString().replaceAll("\"", ""),
                     not
             );
