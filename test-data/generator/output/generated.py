@@ -9,6 +9,7 @@ def validatePlan():
   validator.assertFalse(evaluator.courseName('COS 120'), 'Course COS 120 expected but not found')
   validator.assertFalse(evaluator.nCourseNamesIn(2, ['COS 120', 'COS 121', 'COS 143']), '2 courses from [COS 120, COS 121, COS 143] required but not found')
   validator.assertFalse(evaluator.violatesLeftBeforeRight('COS 120', 'COS 121'), 'Course COS 120 must come before course COS 121')
+  validator.assertFalse(evaluator.violatesMultiLeftBeforeRight(['COS 120', 'COS 143'], 'COS 121'), 'Courses [COS 120, COS 143] must come before course COS 121')
   if (evaluator.courseName('COS 120') and (evaluator.courseName('COS 121') or evaluator.courseName('COS 143'))):
     print('Entering Condition: COS 120 and one of COS 121 or COS 143')
     validator.assertTrue(evaluator.totalCredits() != 15.0, '15 credits')

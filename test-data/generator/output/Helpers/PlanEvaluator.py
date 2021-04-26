@@ -40,6 +40,13 @@ class PlanEvaluator:
         else:
             return False
 
+    def violatesMultiLeftBeforeRight(self, leftCourseNamesList, rightCourseName):
+        for leftCourse in leftCourseNamesList:
+            if self.violatesLeftBeforeRight(leftCourse, rightCourseName):
+                return True
+        return False
+
+
     def totalCredits(self):
         creditSum = 0
         for term in self.contextStack.currentContext()['terms']:
