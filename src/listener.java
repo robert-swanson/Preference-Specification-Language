@@ -96,7 +96,10 @@ public class listener extends PSLGrammarBaseListener {
     @Override public void enterRConstraint(PSLGrammarParser.RConstraintContext ctx) { }
 
     @Override public void exitRConstraint(PSLGrammarParser.RConstraintContext ctx) {
-        boolean invert = false;
+        boolean not = false;
+        boolean required = true;
+        // do all the checking for NOT and rConstraint vs pConstraint here
+        // and then just check if required below where all the other checking is happening
         Constraint constraint = null;
         if (ctx.NUM() != null) {
             int number = Integer.parseInt(ctx.NUM().toString());
@@ -107,26 +110,26 @@ public class listener extends PSLGrammarBaseListener {
                     System.out.println("ERROR: the number of required classes exceeds the number in the list");
                     System.exit(1);
                 }
-                constraint = Constraint.nCourseNames(number, list, invert);
+                constraint = Constraint.nCourseNames(number, list, not);
                 System.out.println("num of "+ Arrays.toString(nameList));
             } else if (ctx.UPPER() != null) { //  NUM UPPER DIVISION credit_hours // upper division hours
                 constraint = Constraint.equalTo(EvaluatorGenerator.totalCreditsGreaterThanEqualToCourseNumber(300),
-                        number, 0, invert, String.format("%d credits", number));
+                        number, 0, not, String.format("%d credits", number));
             } else { //  NUM credit_hours
-                constraint = Constraint.equalTo(EvaluatorGenerator.totalCredits(), number, 0, invert,
+                constraint = Constraint.equalTo(EvaluatorGenerator.totalCredits(), number, 0, not,
                         String.format("%d credits", number));
             }
         } else if (ctx.TAKING() != null) { // TAKING courseNameList BEFORE courseName, prereqs
             constraint = Constraint.leftBeforeRight(  // only works well with one course in list, maybe loop over children?
-                    ctx.courseNameList().children.toString().replaceAll("(\"|,)", ""),
+                    ctx.courseNameList().children.toString().replaceAll("(\")", ""),
                     ctx.courseName().getChild(0).toString().replaceAll("\"", ""),
-                    invert
+                    not
             );
 
         } else { //done
             ArrayList<String> list = new ArrayList<>();
             Collections.addAll(list, nameList);
-            constraint = Constraint.nCourseNames(list.size(), list, invert);
+            constraint = Constraint.nCourseNames(list.size(), list, not);
 //            System.out.println(Arrays.toString(nameList));
         }
 

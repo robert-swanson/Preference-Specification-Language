@@ -30,7 +30,7 @@ Authors
 ------------------|-------------
 names             | Rob Swanson & Liz Yeiter
 computer + OS     | macbook
-time to complete  | 9 hrs
+time to complete  | 21 together + 20 Rob + 2 Liz (see Translator work breakdown)
 partner           | see names
 additional help   | see Reflection section
 </div>
@@ -59,56 +59,56 @@ The input would be a `.psl` file that specifies user preferences and degree requ
 For example, the following file describes a few requirements and then specifies a few user preferences
 ~~~~
 definitions {
-priority strongly 10.
-priority moderately 5.
-priority slightly 1.
+    priority strongly 10.
+    priority moderately 5.
+    priority slightly 1.
 }
 
 computerScienceBSRequirements {
-require "COS 102".
-require "COS 103".
-require "COS 120".
-require "COS 121".
+    require "COS 102".
+    require not "COS 103".
+    require "COS 120".
+    require "COS 121", "COS 333".
 
-require 1 of "COS 311", "COS 321".
-require 2 of "COS 381", "COS 421", "COS 436".
+    require 1 of "COS 311", "COS 321".
+    require 2 of "COS 381", "COS 421", "COS 436".
 
-require 128 hours.
-require 42 upper division credits.
+    require 128 hours in plan.
+    require 42 upper division credits.
 
-require taking "COS 120" before "COS 121".
+    require taking "COS 120" before "COS 121".
 }
 
 studentPreferences {
-prefer strongly "COS 121".
-prefer moderately later classes.
+    prefer moderately "COS 999".
+    prefer moderately later classes.
 
-if taking "COS 436" then {
-prefer slightly "COS 381".
-prefer slightly not taking "COS 421".
-} otherwise {
-prefer slightly not taking "COS 421".
-}
+    if taking "COS 436" then {
+        prefer slightly "COS 381".
+        prefer slightly not  "COS 421".
+    } otherwise {
+        prefer slightly not  "COS 421".
+    }
 
-when taking "COS 381" {
-prefer moderately less credits.
-}
+    when taking "COS 381" {
+        prefer moderately less credits in semester.
+    }
 
-when (taking "COS 381" and taking "COS 333") {
-prefer moderately less credits.
-}
+    when (taking "COS 381" and taking "COS 333") {
+        prefer moderately less credits in semester.
+    }
 
-when ((taking "COS 381" or taking "MAT 215") and taking "COS 121") {
-prefer moderately less credits.
-}
+    when ((taking "COS 381" or taking "MAT 215") and taking "COS 121") {
+        prefer moderately less credits in semester.
+    }
 
-when (taking "COS 381" or (taking "MAT 215" and taking "COS 121")) {
-prefer moderately less credits.
-}
+    when (taking "COS 381" or (taking "MAT 215" and taking "COS 121")) {
+        prefer moderately less credits in semester.
+    }
 
-require "COS 121".
-require not "COS 121".
-prefer moderately "COS 121".
+    require "COS 121".
+    require not "COS 121".
+    prefer moderately "COS 121".
 }
 ~~~~
 [Example `good-integrated.psl`]
@@ -439,9 +439,7 @@ Translator
 ======================
 Translator
 ------------------
-~~~~
-translator
-~~~~
+We chose to use a listener instead of a visitor for this translation.
 
 The translator supports the following features:
 
@@ -449,15 +447,60 @@ The translator supports the following features:
     - course inclusion
     - n course inclusion
     - upper division hours
-    - taking left before right
-- priority aliasing
+    - number of credits in total semester
+    - taking left before right (to a degree, it currently only works with one class as the prerequisite)
+- priority aliasing (this is the main aspect of semantic analysis for this milestone)
 
 
 Testing the Translator
 ------------------
+When writing prefer statements, you must use a predefined priority strength.
+When passing in:
+~~~~
+definitions {
+    priority strongly 10.
+    priority moderately 5.
+    priority slightly 1.
+}
+...
+studentPreferences {
+    prefer moderately "COS 999".
+    ...
+}
+~~~~
+[Excerpt from good-integrated.psl]
+
+the translator successfully generates:
+![A screenshot showing the successful generation of `prefer moderately "COS 999".`. Note the 5 being passed in
+as the preference weight](images/generatedPy.png width="600px")
+
+However, when given:
+~~~~
+definitions {
+    priority strongly 10.
+    priority moderately 5.
+    priority slightly 1.
+}
+...
+studentPreferences {
+    prefer somewhat "COS 999".
+...
+}
+~~~~
+[Corrupted excerpt from good-integrated.psl]
+
+the translator prints an error and exits the program:
+![A screenshot showing the result of incorrect input.](images/badPreference.png width="600px")
+
+Changes to Grammar
+------------------
+While working on this stage of the project, we realized that there were many things we needed to change in the grammar.
 
 Splitting Up the Work
 ------------------
+Liz worked heavily with the listener and the readme. She also worked with Rob on some of the plan evaluators.
+
+Rob
 
 Documentation
 ======================
