@@ -492,6 +492,11 @@ studentPreferences {
 the translator prints an error and exits the program:
 ![A screenshot showing the result of incorrect input.](images/badPreference.png width="600px")
 
+To test the generated python and validate its correctness, we made the scoring process describe the logic behind its validation and its scoring.
+We were then able to run the compiler on the our test input, run the generated code with our test plan, and check its output to verify correct plan assessment.
+
+![A screenshot showing the diagnostic output produced by the generated python](images/generated-output-diagnostics.png width="600px")
+
 Changes to Grammar
 ------------------
 While working on this stage of the project, we realized that there were many things we needed to change in the grammar.
@@ -500,7 +505,10 @@ Splitting Up the Work
 ------------------
 Liz worked heavily with the listener and the readme. She also worked with Rob on some of the plan evaluators.
 
-Rob
+Rob worked more hours because he is also working on this project for his Research 1 class.
+He spend time building a robust API both for the python evaluation helpers and the python generation code.
+He created multiple scoring functions that could be supplied customizable hard and soft bounds, which could either resemble linear scoring or optimal style scoring.
+He implemented the python generating API in java such that `Constraint` objects could be created by the listener, and the `.require()` or `.prefer(weight)` functions could be called on them, and they would be conveniently added to the generated file.
 
 Documentation
 ======================
