@@ -20,7 +20,7 @@
             "properties": {
                 "term": {
                     "type": "string",
-                    "pattern": "^spring|fall|spring|winter|jterm$",
+                    "pattern": "^summer|precollege|fall|spring|winter|jterm$",
                     "description": "A term in a plan"
                 },
                 "term-number": {
