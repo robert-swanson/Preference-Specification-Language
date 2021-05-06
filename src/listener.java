@@ -16,6 +16,7 @@ import java.util.*;
 public class listener extends PSLGrammarBaseListener {
     Hashtable<String, Integer> priorities = new Hashtable<>();
     String[] nameList;
+    boolean rConstraintPreference = false;
 
 
     @Override public void enterStart(PSLGrammarParser.StartContext ctx) {
@@ -98,44 +99,11 @@ public class listener extends PSLGrammarBaseListener {
     @Override public void exitRConstraint(PSLGrammarParser.RConstraintContext ctx) {
         boolean not = false;
         boolean required = true;
-        // do all the checking for NOT and rConstraint vs pConstraint here
-        // and then just check if required below where all the other checking is happening
-        Constraint constraint = null;
-        if (ctx.NUM() != null) {
-            int number = Integer.parseInt(ctx.NUM().toString());
-            if (ctx.OF() != null) { // done
-                ArrayList<String> list = new ArrayList<>();
-                Collections.addAll(list, nameList);
-                if (number > list.size()) {
-                    System.out.println("ERROR: the number of required classes exceeds the number in the list");
-                    System.exit(1);
-                }
-                constraint = Constraint.nCourseNames(number, list, not);
-                System.out.println("num of "+ Arrays.toString(nameList));
-            } else if (ctx.UPPER() != null) { //  NUM UPPER DIVISION credit_hours // upper division hours
-                constraint = Constraint.equalTo(EvaluatorGenerator.totalCreditsGreaterThanEqualToCourseNumber(300),
-                        number, 0, not, String.format("%d credits", number));
-            } else { //  NUM credit_hours
-                constraint = Constraint.equalTo(EvaluatorGenerator.totalCredits(), number, 0, not,
-                        String.format("%d credits", number));
-            }
-        } else if (ctx.TAKING() != null) { // TAKING courseNameList BEFORE courseName, prereqs
-            constraint = Constraint.leftBeforeRight(  // only works well with one course in list, maybe loop over children?
-                    ctx.courseNameList().children.toString(),//.replaceAll("(\")", ""),
-                    ctx.courseName().getChild(0).toString().replaceAll("\"", ""),
-                    not
-            );
-
-        } else { //done
-            ArrayList<String> list = new ArrayList<>();
-            Collections.addAll(list, nameList);
-            constraint = Constraint.nCourseNames(list.size(), list, not);
-//            System.out.println(Arrays.toString(nameList));
-        }
-
+        int weight = 0;
         if (ctx.getParent() instanceof PSLGrammarParser.PConstraintContext) {
             PSLGrammarParser.PreferContext pctx = (PSLGrammarParser.PreferContext) ctx.getParent().getParent();
-            int weight = 0;
+            required = false;
+
             if (! priorities.containsKey(pctx.NAME().toString())) {
                 System.out.println("ERROR: " + pctx.NAME().toString() + " is not a valid Priority");
                 System.exit(1);
@@ -143,46 +111,100 @@ public class listener extends PSLGrammarBaseListener {
                 weight = priorities.get(pctx.NAME().toString());
             }
             if (pctx.NOT() != null) {
-                // negate statement - there IS a NOT
-                constraint.prefer(weight); // come back to this
-            } else {
-                // statement as normal - there is NOT a NOT
-                constraint.prefer(weight); // come back to this
+                not = true;
             }
         } else {
             PSLGrammarParser.RequireContext rctx = (PSLGrammarParser.RequireContext) ctx.getParent();
             if (rctx.NOT() != null) {
-                // negate statement - there IS a NOT
-                ((RequireableConstraint) constraint).require(); // come back to this
-            } else {
-                // statement as normal - there is NOT a NOT
-                ((RequireableConstraint) constraint).require();
+                not = true;
             }
+        }
+        Constraint constraint;
+        if (ctx.NUM() != null) {
+            int number = Integer.parseInt(ctx.NUM().toString());
+            if (ctx.OF() != null) {
+                ArrayList<String> list = new ArrayList<>();
+                Collections.addAll(list, nameList);
+                if (number > list.size()) {
+                    System.out.println("ERROR: the number of required classes exceeds the number in the list");
+                    System.exit(1);
+                }
+                constraint = Constraint.nCourseNames(number, list, not);
+            } else if (ctx.UPPER() != null) { //  NUM UPPER DIVISION credit_hours
+                constraint = Constraint.equalTo(EvaluatorGenerator.totalCreditsGreaterThanEqualToCourseNumber(300),
+                        number, 0, not, String.format("%d credits", number));
+            } else { //  NUM credit_hours
+                constraint = Constraint.equalTo(EvaluatorGenerator.totalCredits(), number, 0, not,
+                        String.format("%d credits", number));
+            }
+        } else if (ctx.TAKING() != null) { // TAKING courseNameList BEFORE courseName
+            constraint = Constraint.leftBeforeRight(  // only works well with one course in list, maybe loop over children?
+                    ctx.courseNameList().getChild(0).toString().replaceAll("(\")", ""),
+                    ctx.courseName().getChild(0).toString().replaceAll("\"", ""),
+                    not
+            );
+        } else {
+            ArrayList<String> list = new ArrayList<>();
+            Collections.addAll(list, nameList);
+            constraint = Constraint.nCourseNames(list.size(), list, not);
+        }
+
+        if (required) {
+            ((RequireableConstraint) constraint).require();
+        } else {
+            rConstraintPreference = true;
+            constraint.prefer(weight);
         }
     }
 
 
-    @Override public void enterPConstraint(PSLGrammarParser.PConstraintContext ctx) { }
+    @Override public void enterPConstraint(PSLGrammarParser.PConstraintContext ctx) {
+        rConstraintPreference = false;
+    }
 
     @Override public void exitPConstraint(PSLGrammarParser.PConstraintContext ctx) {
-        Constraint constraint;
-        if (ctx.LATER() != null) {
-//                LATER course_classes
-//                    Constraint.laterClasses();
-        } else if (ctx.EARLIER() != null) {
-//                EARLIER course_classes
+        int weight = 0;
+        boolean not = false;
+        PSLGrammarParser.PreferContext pctx = (PSLGrammarParser.PreferContext) ctx.getParent();
+
+        if (! priorities.containsKey(pctx.NAME().toString())) {
+            System.out.println("ERROR: " + pctx.NAME().toString() + " is not a valid Priority");
+            System.exit(1);
+        } else {
+            weight = priorities.get(pctx.NAME().toString());
+        }
+        if (pctx.NOT() != null) {
+            not = true;
+        }
+
+        Constraint constraint = null;
+        if (ctx.LATER() != null) { // LATER course_classes
+            constraint = Constraint.laterClasses(not);
+        } else if (ctx.EARLIER() != null) { // EARLIER course_classes
+            constraint = Constraint.earlierClasses(not);
         } else if (ctx.MORE_() != null) {
             if (ctx.course_classes() != null) {
-                //courses
+                constraint = Constraint.greaterThanOrEqualTo(
+                        EvaluatorGenerator.totalCourses(), 6, 0, not, "at least 6 courses"
+                );
             } else {
-                //credits
+                constraint = Constraint.greaterThanOrEqualTo(
+                        EvaluatorGenerator.totalCredits(), 15, 0, not, "at least 15 credits"
+                );
             }
         } else if (ctx.LESS() != null) {
             if (ctx.course_classes() != null) {
-                //courses
+                constraint = Constraint.lessThanOrEqualTo(
+                        EvaluatorGenerator.totalCourses(), 5, 0, not, "at most 5 courses"
+                );
             } else {
-                //credits
+                constraint = Constraint.lessThanOrEqualTo(
+                        EvaluatorGenerator.totalCredits(), 14, 0, not, "at most 14 credits"
+                );
             }
+        }
+        if (! rConstraintPreference) {
+            constraint.prefer(weight);
         }
     }
 
