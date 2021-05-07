@@ -192,9 +192,9 @@ This constraint is scored with a sigmoid function operating on the number of cou
     - Less Than Equal to 5, Deviance 2
 - `plan`
   - `more`
-    - Greater Equal To 48, Deviance 16
+    - Greater Equal To 45, Deviance 16
   - `less`
-    - Less Than Equal to 40, Deviance 16
+    - Less Than Equal to 44, Deviance 16
 
 #### More/Less Credits
 
