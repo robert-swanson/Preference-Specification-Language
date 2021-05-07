@@ -18,6 +18,7 @@ public class listener extends PSLGrammarBaseListener {
     String[] nameList;
     boolean rConstraintPreference = false;
     public static String outputPath;
+    boolean plan = true;
 
     @Override public void enterStart(PSLGrammarParser.StartContext ctx) {
     }
@@ -182,23 +183,49 @@ public class listener extends PSLGrammarBaseListener {
             constraint = Constraint.earlierClasses(not);
         } else if (ctx.MORE_() != null) {
             if (ctx.course_classes() != null) {
-                constraint = Constraint.greaterThanOrEqualTo(
-                        EvaluatorGenerator.totalCourses(), 6, 2, not, "at least 6 courses"
-                );
+                if (plan) {
+                    constraint = Constraint.greaterThanOrEqualTo(
+                            EvaluatorGenerator.totalCourses(), 45, 16, not, "at least 45 courses"
+                    );
+                } else {
+                    constraint = Constraint.greaterThanOrEqualTo(
+                            EvaluatorGenerator.totalCourses(), 6, 2, not, "at least 6 courses"
+                    );
+                }
             } else {
-                constraint = Constraint.greaterThanOrEqualTo(
-                        EvaluatorGenerator.totalCredits(), 15, 0.1, not, "at least 15 credits"
-                );
+                if (plan) {
+                    constraint = Constraint.greaterThanOrEqualTo(
+                            EvaluatorGenerator.totalCredits(), 145, 16, not, "at least 145 credits"
+                    );
+                } else {
+                    constraint = Constraint.greaterThanOrEqualTo(
+                            EvaluatorGenerator.totalCredits(), 15, 2, not, "at least 15 credits"
+                    );
+                }
+
             }
         } else if (ctx.LESS() != null) {
             if (ctx.course_classes() != null) {
-                constraint = Constraint.lessThanOrEqualTo(
-                        EvaluatorGenerator.totalCourses(), 5, 2, not, "at most 5 courses"
-                );
+                if (plan) {
+                    constraint = Constraint.lessThanOrEqualTo(
+                            EvaluatorGenerator.totalCourses(), 44, 16, not, "at most 44 courses"
+                    );
+                } else {
+                    constraint = Constraint.lessThanOrEqualTo(
+                            EvaluatorGenerator.totalCourses(), 5, 2, not, "at most 5 courses"
+                    );
+                }
             } else {
-                constraint = Constraint.lessThanOrEqualTo(
-                        EvaluatorGenerator.totalCredits(), 14, 1, not, "at most 14 credits"
-                );
+                if (plan) {
+                    constraint = Constraint.lessThanOrEqualTo(
+                            EvaluatorGenerator.totalCredits(), 144, 16, not, "at most 144 credits"
+                    );
+                } else {
+                    constraint = Constraint.lessThanOrEqualTo(
+                            EvaluatorGenerator.totalCredits(), 14, 2, not, "at most 14 credits"
+                    );
+                }
+
             }
         }
         if (! rConstraintPreference) {
@@ -232,7 +259,13 @@ public class listener extends PSLGrammarBaseListener {
 
     @Override public void enterSemester_plan(PSLGrammarParser.Semester_planContext ctx) { }
 
-    @Override public void exitSemester_plan(PSLGrammarParser.Semester_planContext ctx) { }
+    @Override public void exitSemester_plan(PSLGrammarParser.Semester_planContext ctx) {
+        if (ctx.getText() == "plan") {
+            plan = true;
+        } else {
+            plan = false;
+        }
+    }
 
 
     @Override public void enterEveryRule(ParserRuleContext ctx) { }
