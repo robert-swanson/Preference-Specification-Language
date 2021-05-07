@@ -185,21 +185,21 @@ public class listener extends PSLGrammarBaseListener {
         } else if (ctx.MORE_() != null) {
             if (ctx.course_classes() != null) {
                 constraint = Constraint.greaterThanOrEqualTo(
-                        EvaluatorGenerator.totalCourses(), 6, 0, not, "at least 6 courses"
+                        EvaluatorGenerator.totalCourses(), 6, 2, not, "at least 6 courses"
                 );
             } else {
                 constraint = Constraint.greaterThanOrEqualTo(
-                        EvaluatorGenerator.totalCredits(), 15, 0, not, "at least 15 credits"
+                        EvaluatorGenerator.totalCredits(), 15, 0.1, not, "at least 15 credits"
                 );
             }
         } else if (ctx.LESS() != null) {
             if (ctx.course_classes() != null) {
                 constraint = Constraint.lessThanOrEqualTo(
-                        EvaluatorGenerator.totalCourses(), 5, 0, not, "at most 5 courses"
+                        EvaluatorGenerator.totalCourses(), 5, 2, not, "at most 5 courses"
                 );
             } else {
                 constraint = Constraint.lessThanOrEqualTo(
-                        EvaluatorGenerator.totalCredits(), 14, 0, not, "at most 14 credits"
+                        EvaluatorGenerator.totalCredits(), 14, 0.1, not, "at most 14 credits"
                 );
             }
         }
