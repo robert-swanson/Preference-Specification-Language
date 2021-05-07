@@ -41,11 +41,11 @@ public class ExampleGeneration {
         lBeforeR.require();
         lBeforeMR.require();
 
-        ifBlock.require();
+        ifBlock.open();
         nCredits.require();
         ifBlock.close();
 
-        whenBlock.require();
+        whenBlock.open();
         nCourses.require();
         whenBlock.close();
 
@@ -56,11 +56,13 @@ public class ExampleGeneration {
         nCourseNames.prefer(10.0);
         lBeforeR.prefer(10.0);
 
-        ifBlock.prefer();
+//        ifBlock.prefer();
+        ifBlock.open();
         nCredits.prefer(3.0);
         ifBlock.close();
 
-        whenBlock.prefer();
+//        whenBlock.prefer();
+        whenBlock.open();
         nCourses.prefer(4.2);
         whenBlock.close();
 

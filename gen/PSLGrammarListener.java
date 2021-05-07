@@ -1,7 +1,5 @@
-// Generated from /Users/elizabethyeiter/Desktop/COS 382/dsl/src/PSLGrammar.g4 by ANTLR 4.9.1
+// Generated from /Users/robertswanson/dev/dsl/src/PSLGrammar.g4 by ANTLR 4.9.1
 import org.antlr.v4.runtime.tree.ParseTreeListener;
-
-import java.io.IOException;
 
 /**
  * This interface defines a complete listener for a parse tree produced by
@@ -17,7 +15,7 @@ public interface PSLGrammarListener extends ParseTreeListener {
 	 * Exit a parse tree produced by {@link PSLGrammarParser#start}.
 	 * @param ctx the parse tree
 	 */
-	void exitStart(PSLGrammarParser.StartContext ctx) throws IOException;
+	void exitStart(PSLGrammarParser.StartContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link PSLGrammarParser#block}.
 	 * @param ctx the parse tree

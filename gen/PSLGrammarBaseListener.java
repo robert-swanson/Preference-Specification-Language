@@ -1,10 +1,8 @@
-// Generated from /Users/elizabethyeiter/Desktop/COS 382/dsl/src/PSLGrammar.g4 by ANTLR 4.9.1
+// Generated from /Users/robertswanson/dev/dsl/src/PSLGrammar.g4 by ANTLR 4.9.1
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
-
-import java.io.IOException;
 
 /**
  * This class provides an empty implementation of {@link PSLGrammarListener},
@@ -23,7 +21,7 @@ public class PSLGrammarBaseListener implements PSLGrammarListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitStart(PSLGrammarParser.StartContext ctx) throws IOException { }
+	@Override public void exitStart(PSLGrammarParser.StartContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

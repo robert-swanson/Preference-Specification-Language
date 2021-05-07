@@ -23,11 +23,27 @@ def validatePlan():
   validator.assertTrue(evaluator.nCourseNamesIn(1, ['MAT 210', 'MAT 352']), '1 courses from [MAT 210, MAT 352] required but not found')
   validator.assertTrue((evaluator.totalCredits() >= 128.0), '128 credits (got {})'.format(evaluator.totalCredits()))
   validator.assertTrue((evaluator.totalCreditsGreaterThanEqualToCourseNumber(300) >= 42.0), '42 upper level credits (got {})'.format(evaluator.totalCreditsGreaterThanEqualToCourseNumber(300)))
+  if ((evaluator.courseName('COS 120') or evaluator.courseName('COS 121')) and (evaluator.courseName('COS 143') or evaluator.courseName('COS 265'))):
+    print('Entering Condition: If Condition')
+    print('Closing Scope')
+  elif evaluator.courseName('SYS 120'):
+    print('Entering Condition: Otherwise If')
+    print('Closing Scope')
+  else:
+    print('Entering Condition: Otherwise')
+    print('Closing Scope')
+  if evaluator.contextStack.subcontext(lambda: evaluator.courseName('COS 121')):
+    print('Entering Context: When Condition')
+    print('Closing Scope')
   
+  print()
+  print("---------------------")
   if validator.isValid:
     print("Valid Plan")
   else:
     print("Invalid Plan")
+  print("---------------------")
+  print()
 
 def scorePlan():
   scorer = Scorer()
@@ -36,8 +52,28 @@ def scorePlan():
   scorer.scoreSigmoid(evaluator.averageStartTime(), 10.0, 'Earlier classes', invert=False, worstBound=None, bestBound=None, lowerQuartile=840.0, upperQuartile=600.0)
   scorer.scoreSigmoid(evaluator.totalCredits(), 1.0, 'at most 14 credits', invert=False, worstBound=None, bestBound=None, lowerQuartile=15.0, upperQuartile=14.0)
   scorer.scoreSigmoid(evaluator.totalCredits(), 1.0, 'at least 15 credits', invert=False, worstBound=None, bestBound=None, lowerQuartile=14.9, upperQuartile=15.0)
+  if ((evaluator.courseName('COS 120') or evaluator.courseName('COS 121')) and (evaluator.courseName('COS 143') or evaluator.courseName('COS 265'))):
+    print('Entering Condition: If Condition')
+    scorer.scoreBoolean(evaluator.nCourseNamesIn(1, ['COS 121']), 1.0, 'Taking 1 courses from [COS 121]', invert=True)
+    print('Closing Scope')
+  elif evaluator.courseName('SYS 120'):
+    print('Entering Condition: Otherwise If')
+    scorer.scoreBoolean(evaluator.nCourseNamesIn(1, ['COS 265']), 1.0, 'Taking 1 courses from [COS 265]', invert=False)
+    scorer.scoreBoolean(evaluator.nCourseNamesIn(1, ['MAT 210']), 1.0, 'Taking 1 courses from [MAT 210]', invert=False)
+    print('Closing Scope')
+  else:
+    print('Entering Condition: Otherwise')
+    print('Closing Scope')
+  if evaluator.contextStack.subcontext(lambda: evaluator.courseName('COS 121')):
+    print('Entering Context: When Condition')
+    scorer.scoreBoolean(evaluator.nCourseNamesIn(1, ['COS 121']), 1.0, 'Taking 1 courses from [COS 121]', invert=True)
+    print('Closing Scope')
   
+  print()
+  print("---------------------")
   print("Final Score: {:.0f}%".format(scorer.getScore()))
+  print("---------------------")
+  print()
 
 evaluator = PlanEvaluator()
 validatePlan()

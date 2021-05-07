@@ -12,10 +12,10 @@ public class Condition {
     }
 
     public Condition and(Condition right) {
-        return new Condition(String.format("(%s and %s)", this.python, right.python));
+        return new Condition(String.format("(%s and %s)", right.python, this.python));
     }
     public Condition or(Condition right) {
-        return new Condition(String.format("(%s or %s)", this.python, right.python));
+        return new Condition(String.format("(%s or %s)", right.python, this.python));
     }
     public Condition not() {
         return new Condition(String.format("(not %s)", this.python));

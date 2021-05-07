@@ -1,7 +1,5 @@
 import generation.PythonGenerator;
-import generation.classes.Constraint;
-import generation.classes.EvaluatorGenerator;
-import generation.classes.RequireableConstraint;
+import generation.classes.*;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -15,6 +13,8 @@ import java.util.*;
 
 public class listener extends PSLGrammarBaseListener {
     Hashtable<String, Integer> priorities = new Hashtable<>();
+    Stack<Condition> conditionStack = new Stack<>();
+    Stack<Scope> scopeStack =  new Stack<>();
     String[] nameList;
     boolean rConstraintPreference = false;
     public static String outputPath;
@@ -22,8 +22,12 @@ public class listener extends PSLGrammarBaseListener {
     @Override public void enterStart(PSLGrammarParser.StartContext ctx) {
     }
 
-    @Override public void exitStart(PSLGrammarParser.StartContext ctx) throws IOException{
-        PythonGenerator.generate(outputPath); // <-- Generation
+    @Override public void exitStart(PSLGrammarParser.StartContext ctx){
+        try {
+            PythonGenerator.generate(outputPath); // <-- Generation
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -49,24 +53,39 @@ public class listener extends PSLGrammarBaseListener {
     }
 
 
-    @Override public void enterRequire(PSLGrammarParser.RequireContext ctx) { }
+    @Override public void enterRequire(PSLGrammarParser.RequireContext ctx) {
+        if (!scopeStack.isEmpty()) {
+            scopeStack.peek().setUsedRequire();
+        }
+    }
 
     @Override public void exitRequire(PSLGrammarParser.RequireContext ctx) { }
 
 
-    @Override public void enterPrefer(PSLGrammarParser.PreferContext ctx) { }
+    @Override public void enterPrefer(PSLGrammarParser.PreferContext ctx) {
+        if (!scopeStack.isEmpty()) {
+            scopeStack.peek().setUsedPrefer();
+        }
+    }
 
     @Override public void exitPrefer(PSLGrammarParser.PreferContext ctx) { }
 
 
-    @Override public void enterIf_(PSLGrammarParser.If_Context ctx) { }
+    @Override public void enterIf_(PSLGrammarParser.If_Context ctx) {
+        System.out.println("Entering IF");
+    }
 
     @Override public void exitIf_(PSLGrammarParser.If_Context ctx) {
+        System.out.println("Exiting IF");
+        scopeStack.pop().close();
         // clear stack seen in condition
+
     }
 
 
-    @Override public void enterOtherwiseIf(PSLGrammarParser.OtherwiseIfContext ctx) { }
+    @Override public void enterOtherwiseIf(PSLGrammarParser.OtherwiseIfContext ctx) {
+
+    }
 
     @Override public void exitOtherwiseIf(PSLGrammarParser.OtherwiseIfContext ctx) {
         // clear stack seen in condition
@@ -75,12 +94,21 @@ public class listener extends PSLGrammarBaseListener {
 
     @Override public void enterOtherwise(PSLGrammarParser.OtherwiseContext ctx) { }
 
-    @Override public void exitOtherwise(PSLGrammarParser.OtherwiseContext ctx) { }
+    @Override public void exitOtherwise(PSLGrammarParser.OtherwiseContext ctx) {
+        scopeStack.pop().close();
+        Scope scope = Scope.otherwiseBlock("Otherwise");
+        scope.open();
+        scopeStack.push(scope);
+        System.out.println("Done Otherwise");
+    }
 
 
     @Override public void enterWhen(PSLGrammarParser.WhenContext ctx) { }
 
-    @Override public void exitWhen(PSLGrammarParser.WhenContext ctx) { }
+    @Override public void exitWhen(PSLGrammarParser.WhenContext ctx) {
+        System.out.println("Exiting When");
+        scopeStack.pop().close();
+    }
 
 
     @Override public void enterCondition(PSLGrammarParser.ConditionContext ctx) {
@@ -88,7 +116,41 @@ public class listener extends PSLGrammarBaseListener {
     }
 
     @Override public void exitCondition(PSLGrammarParser.ConditionContext ctx) {
-        // look at the things on the stack made above
+        if (ctx.TAKING() != null) {
+            String course = ctx.STRING().toString();
+            conditionStack.push(new Condition(EvaluatorGenerator.courseNameIn(course.substring(1,course.length()-1))));
+            System.out.println(ctx.STRING());
+        } else if (ctx.AND() != null) {
+            System.out.println("AND");
+            conditionStack.push(conditionStack.pop().and(conditionStack.pop()));
+        } else if (ctx.OR() != null) {
+            System.out.println("OR");
+            conditionStack.push(conditionStack.pop().or(conditionStack.pop()));
+        } else if (ctx.NOT() != null) {
+            System.out.println("NOT");
+            conditionStack.push(conditionStack.pop().not());
+        }
+        if (ctx.parent instanceof PSLGrammarParser.If_Context) {
+            Condition condition = conditionStack.pop();
+            Scope scope = Scope.ifBlock(condition, "If Condition");
+            scopeStack.push(scope);
+            scope.open();
+            System.out.println("Done If");
+        } else if (ctx.parent instanceof PSLGrammarParser.OtherwiseIfContext) {
+            scopeStack.pop().close();
+
+            Condition condition = conditionStack.pop();
+            Scope scope = Scope.otherwiseIfBlock(condition, "Otherwise If");
+            scopeStack.push(scope);
+            scope.open();
+            System.out.println("Done Otherwise If");
+        } else if (ctx.parent instanceof PSLGrammarParser.WhenContext) {
+            Condition condition = conditionStack.pop();
+            Scope scope = Scope.whenBlock(condition, "When Condition");
+            scopeStack.push(scope);
+            scope.open();
+            System.out.println("Done When");
+        }
     }
 
 

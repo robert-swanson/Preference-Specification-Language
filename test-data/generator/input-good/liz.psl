@@ -30,4 +30,16 @@ personal {
 
     prefer SLIGHTLY less credits in plan.
     prefer SLIGHTLY more credits in plan.
+
+    if ((taking "COS 120" or taking "COS 121") and (taking "COS 143" or taking "COS 265")) then {
+        prefer SLIGHTLY not "COS 121".
+    } otherwise if taking "SYS 120" then {
+        prefer SLIGHTLY "COS 265".
+    } otherwise {
+        prefer SLIGHTLY "MAT 210".
+    }
+
+    when taking "COS 121" {
+        prefer SLIGHTLY not "COS 121".
+    }
 }

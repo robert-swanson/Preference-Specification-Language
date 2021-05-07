@@ -14,8 +14,8 @@ priority: PRIORITY NAME NUM PERIOD;
 require: REQUIRE NOT? rConstraint PERIOD;
 prefer: PREFER NAME NOT? pConstraint PERIOD;
 
-if_: IF NOT? condition THEN body otherwiseIf* otherwise?;
-otherwiseIf: OTHERWISE IF NOT? condition THEN body;
+if_: IF condition THEN body otherwiseIf* otherwise?;
+otherwiseIf: OTHERWISE IF condition THEN body;
 otherwise: OTHERWISE body;
 
 when: WHEN condition body;
@@ -24,6 +24,7 @@ condition: TAKING STRING // course
     | OPENPAREND condition AND condition CLOSEPAREND
     | OPENPAREND condition OR condition CLOSEPAREND
     | OPENPAREND condition CLOSEPAREND
+    | OPENPAREND NOT condition CLOSEPAREND
     ;
 
 rConstraint: courseNameList // courses
