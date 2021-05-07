@@ -1,7 +1,4 @@
-**A00 - Comparing Languages**
-
-This is a sample write up for the A00_LanguageComparison assignment.
-
+**Project - Domain-Specific Language**
 
 <!--
 
@@ -20,175 +17,752 @@ For each of your team's implementations, explain the following (where appropriat
 Feel free to modify the structure of this `readme.html` file to fit the current assignment and to fit how you wish to present your findings.
 
 
-Submission
------------
-
-
-Create a zip file that contains all of your code, this `readme.html` document, and any additional files of evidence (ex: screenshots).
-
-Use folders to divide up the subparts of your submission.
-For example, your zip file could look like the following:
-
-~~~~
-readme.html
-ada/
-    primepartitions.adb
-    screenshot.png
-go/
-    primepartitions.go
-    screenshot.png
-haskell/
-    primepartitions.hs
-    screenshot.png
-prolog/
-    primepartitions.pl
-    screenshot.png
-python/
-    primepartitions.py
-    screenshot.png
-~~~~
 -->
 
 
-Author
+Authors
 =============
 
 <!-- Note: wrapping table in div.noheader will hide the table's header -->
 <!-- Note: wrapping table in div.firstcol will style the first column different from other columns -->
 <div class="noheader firstcol">
-                  |             
+  1              | 2
 ------------------|-------------
-name              | Bob the Tomato
-computer + OS     | my Linux laptop
-time to complete  | 3 hours
-partner           | Larry the Cucumber
+names             | Rob Swanson & Liz Yeiter
+computer + OS     | macbook
+time to complete  | 23 together + 29 Rob + 2 Liz (see Translator work breakdown)
+partner           | see names
 additional help   | see Reflection section
 </div>
 
 
 
-Prime Partitions
+Project Selection
 =================
+Define the Domain
+------------------
+College course recomendation based off of degree requirements and student preferences.
+The end goal is to make a language that can specify user preferences for Envisage.
 
-42 has XXXX prime partitions, and they are...
+<!--(What is the purpose of the language?) -->
+Define the Problem
+------------------
+How does the user express the requirements of their degree and their personal preferences to the planning engine?
+There is a lot to think about when creating a plan, and all the moving parts can be overwhelming, which is what this language will strive to help.
 
 
+<!-- Create example "solutions". What is the expected output for some examples of valid input? -->
+Expected Solutions
+------------------
+The input would be a `.psl` file that specifies user preferences and degree requirements in a human readable format.
+(We renamed the type of file from `.cps` to `.psl`, Preference Specification Language, on 3.13.21)
+For example, the following file describes a few requirements and then specifies a few user preferences
+~~~~
+definitions {
+    priority strongly 10.
+    priority moderately 5.
+    priority slightly 1.
+}
+
+computerScienceBSRequirements {
+    require "COS 102".
+    require not "COS 103".
+    require "COS 120".
+    require "COS 121", "COS 333".
+
+    require 1 of "COS 311", "COS 321".
+    require 2 of "COS 381", "COS 421", "COS 436".
+
+    require 128 hours in plan.
+    require 42 upper division credits.
+
+    require taking "COS 120" before "COS 121".
+}
+
+studentPreferences {
+    prefer moderately "COS 999".
+    prefer moderately later classes.
+
+    if taking "COS 436" then {
+        prefer slightly "COS 381".
+        prefer slightly not  "COS 421".
+    } otherwise {
+        prefer slightly not  "COS 421".
+    }
+
+    when taking "COS 381" {
+        prefer moderately less credits in semester.
+    }
+
+    when (taking "COS 381" and taking "COS 333") {
+        prefer moderately less credits in semester.
+    }
+
+    when ((taking "COS 381" or taking "MAT 215") and taking "COS 121") {
+        prefer moderately less credits in semester.
+    }
+
+    when (taking "COS 381" or (taking "MAT 215" and taking "COS 121")) {
+        prefer moderately less credits in semester.
+    }
+
+    require "COS 121".
+    require not "COS 121".
+    prefer moderately "COS 121".
+}
+~~~~
+[Example `good-integrated.psl`]
+
+The output would be a python file which includes a python function for each requirement, which takes in the context of a plan and returns some value corresponding to that requirement's satisfaction.
+Other possible outputs could be a prolog fact file or a json document.
+This output file would probably not be of much use to the user without other tools to create or pass in plans.
+
+~~~~ Python
+import helpers
+
+STRONGLY = 10
+MODERATLY = 5
+SLIGHTLY = 1
+
+def isValidPlan(plan):
+    return (
+        courseNameInPlan(plan, "COS 102") and
+        courseNameInPlan(plan, "COS 103") and
+        courseNameInPlan(plan, "COS 120") and
+        courseNameInPlan(plan, "COS 121") and
+
+        nCourseNamesInPlan(plan, 1, ["COS 311", "COS 321"]) and
+        nCourseNamesInPlan(plan, 2, ["COS 381", "COS 421", "COS 436"]) and
+
+        credits() >= 128 and
+        creditsOver(plan, 300) >= 42 and
+
+        leftBeforeRight(plan, "COS 120", "COS 121")
+    )
+
+def planScore(plan):
+    totalScore = 0
+    maxScore = 0
+
+    totalScore += STRONGLY * courseNameInPlan(plan, "COS 121")
+    (totalScore, maxScore) = applyPreference(totalScore, maxScore, percentage, STRONGLY, courseNameInPlan(plan, "COS 121"))
+    (totalScore, maxScore) = applyPreference(totalScore, maxScore, sigmoid, MODERATLY, averageMeetingTime(plan))
+
+    if courseNameInPlan("COS 436"):
+        (totalScore, maxScore) = applyPreference(totalScore, maxScore, percentage, SLIGHTLY, courseNameInPlan(plan, "COS 381"))
+        (totalScore, maxScore) = applyPreference(totalScore, maxScore, percentage, SLIGHTLY, not courseNameInPlan(plan, "COS 421"))
+
+    if courseNameInPlan("COS 381"):
+        semesterContext = contextFromSemester(plan, plan.courses["COS 381"].semseter)
+        (totalScore, maxScore) = applyPreference(totalScore, maxScore, reverseSigmoid, MODERATLY, credits(semesterContext))
+
+    return totalScore/maxScore
+
+~~~~
+[Example `output.py`]
+The compiler could create a python file like this, which could take in a python object (which could be provided and decoded from JSON) and can specify whether the plan is valid, and also the level to which the user preferences are met.
+This file includes the `helpers.py` file which **is not generated** and provides basic functionality that supports preference and requiremnt validation.
+
+~~~~
+def courseNameInPlan(context, courseName):
+    return context.courses.contains(courseName)
+
+def nCourseNamesInPlan(context, n, fromCourseNames):
+    count = 0
+    for courseName in fromCourseNames:
+        if courseNameInPlan(context, courseName):
+            count += 1
+            if count >= n:
+                return true
+    return false
+
+def leftBeforeRight(context, leftCourseName, rightCourseName):
+    if courseNameInPlan(leftCourseName) and courseNameInPlan(rightCourseName):
+        return context.courses[leftCourseName].semseter < context.courses[rightCourseName].semseter
+
+EARLIEST_MEETING_TIME = 800
+LATEST_MEETING_TIME = 1500
+
+def averageMeetingTime(context):
+    timeSum = 0
+    for meeting in context.meetings:
+        timeSum += (meeting.time - EARLIEST_MEETING_TIME) / (LATEST_MEETING_TIME - EARLIEST_MEETING_TIME)
+    return timeSum / len(context.meetings)
+
+def credits(context):
+    creditSum = 0
+    for meeting in context.meetings:
+        creditSum += meeting.credits
+    return creditSum
+
+def creditsOver(context, minCourseNumber):
+    creditSum = 0
+    for meeting in context.meetings:
+        if meeting.courseNumber >= minCourseNumber:
+            creditSum += meeting.credits
+    return creditSum
+
+def applyPreference(totalScore, maxScore, scaler, weight, score):
+    return (totalScore+weight*scaler(preferenceSatisfaction), maxScore+weight)
+
+def percentage(score):
+    return min(max(score, 1), 0) * weight
+
+def sigmoid(score):
+    return weight/(1+10**(-score))
+def reverseSigmoid(score):
+    return weight/(1+10**(score))
+
+def contextFromSemester(contextIn, semester):
+    contextOut = { courses: [], meetings: [] }
+    for meeting in contextIn.meeting:
+        if meeting.semester == semester:
+            contextOut.courses.append(meeting.course)
+            contextOut.meetings.append(meeting)
+~~~~
+[helpers.py]
+
+<!-- Define functionality. How is the output determined for a given input? -->
+Define Functionality
+------------------
+A person making use of this system would start by creating a `.psl` input file that follows the language specification to define the requirements of their degrees (possibly by importing from other files).
+They would then run the compiler which would produce a python file with two functions:
+1. `isValidPlan(plan)` which returns a boolean
+2. `planScore(plan)` which returns a double between 0 and 1, with 1 being the highest possible score, which can only be achived when all applied preferences are fully met (which is not possible for preferences which use a sigmoid function).
+The user could populate a python object however they wish, but would likely do so by specifying a candidate plan in json, and then decoding it.
+They could then pass this object to either function to evaluate it.
+
+<!-- Talk with the professor, and get approval. -->
+Approval
+------------------
+We talked to Dr. Denning about the difference between syntactic and semantic analysis and added a few types of symantic errors that we will check including
+
+1. Verify counts for things such as `require 7 of "COS 381", "COS 421", "COS 436".`
+2. Ensure that there are no prerequisite cycles.
+~~~~
+require "A" before "B".
+require "B" before "A".
+~~~~
+3. Identify preference/requirement conflicts when two constrain the same thing differently, for example
+~~~~
+	require "COS 121".
+	require not "COS 121".
+	prefer moderately "COS 121".
+~~~~
 
 
-Implementations
+Splitting Up the Work
+------------------
+Rob made example input and output, and contributed to the readme.
+
+Liz made the template README and filled out initial stuff and discussed semantic vs syntactic examples.
+
+Grammar / Parser (we did these in one step)
 ================
+Grammar
+------------------
+~~~~
+grammar PSLGrammar;
+
+start: block+ EOF;
+
+block: NAME body;
+body: '{' statement+ '}';
+statement: require
+| priority
+| prefer
+| if_
+| when;
+
+priority: PRIORITY NAME NUM PERIOD;
+require: REQUIRE constraint PERIOD;
+prefer: PREFER NAME constraint PERIOD;
+
+if_: IF condition THEN body otherwiseIf* otherwise?;
+otherwiseIf: OTHERWISE IF condition THEN body;
+otherwise: OTHERWISE body;
+
+when: WHEN condition body;
+
+condition: TAKING STRING // course
+| NOT condition // not
+| OPENPAREND condition AND condition CLOSEPAREND
+| OPENPAREND condition OR condition CLOSEPAREND
+| OPENPAREND condition CLOSEPAREND
+;
+
+constraint:
+TAKING? courseNameList // courses
+| NUM credit_hours // creditHours
+| NUM OF courseNameList // X of courses
+| NUM UPPER DIVISION credit_hours // upper division hours
+| TAKING courseNameList BEFORE courseName // prereqs
+
+| LATER course_classes
+| EARLIER course_classes
+
+| MORE_ course_classes
+| LESS course_classes
+| MORE_ credit_hours
+| LESS credit_hours
+
+| NOT constraint // not
+;
 
 
-Language: Ada
---------------------------------
+courseNameList: (STRING ',')* STRING;
+courseName: STRING;
+credit_hours: CREDITS | HOURS;
+course_classes: COURSES | CLASSES;
 
-<!-- Details, source code, and screenshots here -->
-<!-- Include screenshot showing prime partitions of 42 -->
+// Statement Types
+PRIORITY: 'priority';
+REQUIRE: 'require';
+PREFER: 'prefer';
 
+IF: 'if';
+THEN: 'then';
+OTHERWISE: 'otherwise';
+WHEN: 'when';
+AND: 'and';
+OR: 'or';
 
-Language: OCaml or Haskell  <!-- include only the language that you chose, delete others -->
---------------------------------
+// Constraints
 
-<!-- Details, source code, and screenshots here -->
-<!-- Include screenshot showing prime partitions of 42 -->
+TAKING: 'taking';
+BEFORE: 'before';
 
-Language: C#, Go, or Rust  <!-- include only the language that you chose, delete others -->
---------------------------------
+CREDITS: 'credits';
+HOURS: 'hours';
 
-<!-- Details, source code, and screenshots here -->
-<!-- Include screenshot showing prime partitions of 42 -->
+UPPER: 'upper';
+DIVISION: 'division';
+OF: 'of';
 
-Language: Javascript, Perl, or Ruby  <!-- include only the language that you chose, delete others -->
---------------------------------
+LATER: 'later';
+EARLIER: 'earlier';
 
-<!-- Details, source code, and screenshots here -->
-<!-- Include screenshot showing prime partitions of 42 -->
-
-Language: Prolog
---------------------------------
-
-<!-- Details, source code, and screenshots here -->
-<!-- Include screenshot showing prime partitions of 42 -->
-
-Language: Scheme (extra credit)
---------------------------------
-
-<!-- Details, source code, and screenshots here -->
-<!-- Include screenshot showing prime partitions of 42 -->
+LESS: 'less';
+MORE_: 'more';
 
 
+CLASSES: 'classes';
+COURSES: 'courses';
+NOT: 'not';
 
-Assignment Reflection
+// Atoms
+STRING: '"' .*? '"';
+PERIOD: '.';
+OPENPAREND: '(';
+CLOSEPAREND: ')';
+NUM: [0-9]+;
+NAME: [a-zA-Z]('-'|'_'|[a-zA-Z0-9])*;
+
+WS      : [ \t\n]+ -> skip ;  // tells ANTLR to ignore these
+~~~~
+
+Testing the Grammar
+------------------
+As we wrote out the grammar, we realized that there were several changes that needed to be made for parsing ease / usability.
+
+1. we changed the `:` after a block name to `{ body }`.
+2. We added `otherwise` as an option in addition to the `if` statements.
+3. We added boolean logic to conditionals and forced parentheses around uses of `and` and `or` to make order of operations explicit.
+4. We also fleshed out that the conditions for if statements might be and all the potential constraints for what might follow the `require` keyword.
+
+These changes are reflected in the input listed in Project Selection.
+
+We used the Definitive ANTLR 4 Reference book to implement strings, page 76.
+
+
+Testing the Parser
+------------------
+<!--list correct and incorrect inputs-->
+We made several good and bad input files.
+
+Good Inputs: For the sake of space, I will just show the good output of `good-integrated.psl`, which
+combines a lot of potential inputs.
+
+![A screenshot showing the successful parsing of good-integrated.psl](images/good-integrated.png width="600px")
+
+Bad Inputs:
+
+### Bad And
+~~~~
+name {
+    if taking "COS 120" taking "COS 121" then {
+        require "COS 120".
+    }
+}
+~~~~
+![A screenshot showing the unsuccessful parsing of bad-and.psl](images/bad-and.png width="600px")
+
+### Bad No Block
+~~~~
+require "COS 120".
+~~~~
+![A screenshot showing the unsuccessful parsing of bad-no-block.psl](images/bad-no-block.png width="600px")
+
+### Bad Period
+~~~~
+name {
+    require "COS 120"
+}
+~~~~
+![A screenshot showing the unsuccessful parsing of bad-period.psl](images/bad-period.png width="600px")
+
+### Bad Preference
+~~~~
+name {
+    prefer "COS 120".
+}
+~~~~
+![A screenshot showing the unsuccessful parsing of bad-preference.psl](images/bad-preference.png width="600px")
+
+### Bad String
+~~~~
+name {
+    require cos 120.
+}
+~~~~
+![A screenshot showing the unsuccessful parsing of bad-string.psl](images/bad-string.png width="600px")
+
+Splitting Up the Work
+------------------
+We did most of the main work of creating/fixing the grammar together.
+
+Rob worked on a bit of the grammar on his own and made multiple correct and incorrect inputs.
+
+Liz worked on the readme, generated the parser, and set up a java class to run inputs.
+
+Translator
 ======================
+Translator
+------------------
+We chose to use a listener instead of a visitor for this translation.
 
-<!-- Note: wrapping table in div.noheader will hide the table's header -->
-<!-- Note: wrapping table in div.firstcol will style the first column different from other columns -->
-<div class="noheader firstcol">
-                        |     
-------------------------|-----
-Ada                     | aaa
-OCaml, Haskell          | bbb
-C#, Go, Rust            | ccc
-JavaScript, Perl, Ruby  | ddd
-Prolog                  | eee
-Scheme (extra)          | fff
-</div>
+The translator supports the following features:
 
+- conditions
+    - course inclusion
+    - n course inclusion
+    - upper division hours
+    - number of credits in total semester
+    - taking left before right (to a degree, it currently only works with one class as the prerequisite)
+- priority aliasing (this is the main aspect of semantic analysis for this milestone)
+
+Our translator generates a python file that is then used to evaluate a plan to see if it conforms to the
+student's requirements and preferences. Here is the file when `good-integrated.psl` is passed to the translator.
+~~~~
+from Helpers.PlanEvaluator import PlanEvaluator
+from Helpers.Validator import Validator
+from Helpers.Scorer import Scorer
+import Helpers.Utilities as ut
+
+def validatePlan():
+    validator = Validator()
+
+    validator.assertTrue(evaluator.nCourseNamesIn(1, ['COS 102']), '1 courses from [COS 102] required but not found')
+    validator.assertTrue(evaluator.nCourseNamesIn(1, ['COS 103']), '1 courses from [COS 103] required but not found')
+    validator.assertTrue(evaluator.nCourseNamesIn(1, ['COS 120']), '1 courses from [COS 120] required but not found')
+    validator.assertTrue(evaluator.nCourseNamesIn(2, ['COS 121', 'COS 333']), '2 courses from [COS 121, COS 333] required but not found')
+    validator.assertTrue(evaluator.nCourseNamesIn(1, ['COS 311', 'COS 321']), '1 courses from [COS 311, COS 321] required but not found')
+    validator.assertTrue(evaluator.nCourseNamesIn(2, ['COS 381', 'COS 421', 'COS 436']), '2 courses from [COS 381, COS 421, COS 436] required but not found')
+    validator.assertEquals(evaluator.totalCredits(), 128.0, '128 credits')
+    validator.assertEquals(evaluator.totalCreditsGreaterThanEqualToCourseNumber(300), 42.0, '42 credits')
+    validator.assertTrue(evaluator.violatesLeftBeforeRight('[COS 120]', 'COS 121'), 'Course [COS 120] must come before course COS 121')
+    validator.assertTrue(evaluator.nCourseNamesIn(1, ['COS 121']), '1 courses from [COS 121] required but not found')
+    validator.assertTrue(evaluator.nCourseNamesIn(1, ['COS 121']), '1 courses from [COS 121] required but not found')
+
+    if validator.isValid:
+        print("Valid Plan")
+    else:
+        print("Invalid Plan")
+
+def scorePlan():
+    scorer = Scorer()
+    scorer.enableDiagnostics()
+
+    scorer.scoreBoolean(evaluator.nCourseNamesIn(1, ['COS 999']), 5.0, 'Taking 1 courses from [COS 999]', invert=False)
+    scorer.scoreBoolean(evaluator.nCourseNamesIn(1, ['COS 381']), 1.0, 'Taking 1 courses from [COS 381]', invert=False)
+    scorer.scoreBoolean(evaluator.nCourseNamesIn(1, ['COS 421']), 1.0, 'Taking 1 courses from [COS 421]', invert=False)
+    scorer.scoreBoolean(evaluator.nCourseNamesIn(1, ['COS 421']), 1.0, 'Taking 1 courses from [COS 421]', invert=False)
+    scorer.scoreBoolean(evaluator.nCourseNamesIn(1, ['COS 121']), 5.0, 'Taking 1 courses from [COS 121]', invert=False)
+
+    print("Final Score: {:.0f}%".format(scorer.getScore()))
+
+evaluator = PlanEvaluator()
+validatePlan()
+scorePlan()
+~~~~
+
+
+Testing the Translator
+------------------
+When writing prefer statements, you must use a predefined priority strength.
+When passing in:
+~~~~
+definitions {
+    priority strongly 10.
+    priority moderately 5.
+    priority slightly 1.
+}
+...
+studentPreferences {
+    prefer moderately "COS 999".
+    ...
+}
+~~~~
+[Excerpt from good-integrated.psl]
+
+the translator successfully generates:
+![A screenshot showing the successful generation of `prefer moderately "COS 999".`. Note the 5 being passed in
+as the preference weight](images/generatedPy.png width="600px")
+
+However, when given:
+~~~~
+definitions {
+    priority strongly 10.
+    priority moderately 5.
+    priority slightly 1.
+}
+...
+studentPreferences {
+    prefer somewhat "COS 999".
+...
+}
+~~~~
+[Corrupted excerpt from good-integrated.psl]
+
+the translator prints an error and exits the program:
+
+![A screenshot showing the result of incorrect input.](images/badPreference.png width="600px")
+
+To test the generated python and validate its correctness, we made the scoring process describe the logic behind its validation and its scoring.
+We were then able to run the compiler on our test input, run the generated code with our test plan, and check its output to verify correct plan assessment.
+
+![A screenshot showing the diagnostic output produced by the generated python](images/generated-output-diagnostics.png width="600px")
+
+The test plan that we evaluated is included in the submission.
+
+Changes to Grammar
+------------------
+While working on this stage of the project, we realized that there were many things we needed to change in the grammar.
+
+- changes
+    - you no longer include `taking` when saying `require taking "COS 123".`
+    - the ability to negate a statement got moved to a different rule to make it easier to translate
+    - changed the generic `constraint` (which could be a required or a prefer statement) to distinguish between the two as `rConstraint` and `pConstraint`
+    - added the ability to specify whether you want certain constraints to apply to a whole plan or a specific semester
+
+Splitting Up the Work
+------------------
+Liz worked heavily with the listener and the readme. She also worked with Rob on some of the plan evaluators.
+
+Rob worked more hours because he is also working on this project for his Research 1 class.
+He spent time building a robust API both for the python evaluation helpers and the python generation code.
+He created multiple scoring functions that could be supplied customizable hard and soft bounds, which could either resemble linear scoring or optimal style scoring.
+He implemented the python generating API in java such that `Constraint` objects could be created by the listener, and the `.require()` or `.prefer(weight)` functions could be called on them, and they would be conveniently added to the generated file.
+
+Documentation
+======================
+Documentation
+--------------
+See `documentation.html`
+
+Example & Validation
+--------------
+For a non-trivial example, Liz made a json version of her 4-year plan. It's not 100% accurate, but it's close enough to
+be a good example for this project.
+Rob made a psl file that demonstrates encoding degree requirements, and also added sample preferences that demonstrates use of every constraint, conditions, if/otherwise if/otherwise blocks, and when blocks.
+
+~~~~
+baCS {
+    require 1 of "COS 120", "SYS 120".
+    require "COS 102", "COS 121", "COS 143", "COS 243", "COS 265", "COS 284", "COS 492", "COS 493", "MAT 151", "MAT 215".
+
+    require 1 of "COS 311", "COS 321".
+    require 1 of "COS 320", "COS 382", "COS 435".
+    require 1 of "COS 393", "COS 394", "COS 450".
+    require 1 of "MAT 210", "MAT 352".
+
+    require 128 hours in plan.
+    require 42 upper division hours.
+}
+
+priorities {
+    priority GREATLY 10.
+    priority SLIGHTLY 1.
+}
+
+personal {
+    prefer GREATLY earlier classes.
+
+    prefer SLIGHTLY less credits in plan.
+    prefer SLIGHTLY more credits in plan.
+
+    if (taking "COS 121" and (not taking "COS 144")) then {
+        prefer SLIGHTLY "COS 243".
+        require taking "COS 265" before "COS 120".
+    } otherwise if taking "COS 143" then {
+        prefer SLIGHTLY "COS 243".
+    } otherwise {
+        prefer SLIGHTLY  "COS 265".
+    }
+
+    when taking "COS 121" {
+        prefer SLIGHTLY less classes in semester.
+        prefer SLIGHTLY more credits in semester.
+        prefer SLIGHTLY later classes.
+    }
+}
+~~~~
+
+The psl file is translated by running the parser with arguments pointing to the psl file and where it should be generated:
+`test-data/generator/input-good/liz.psl test-data/generator/output/generated.py`
+
+The following file is generated:
+
+~~~~
+from Helpers.PlanEvaluator import PlanEvaluator
+from Helpers.Validator import Validator
+from Helpers.Scorer import Scorer
+import Helpers.Utilities as ut
+
+def validatePlan():
+    validator = Validator()
+
+    validator.assertTrue(evaluator.nCourseNamesIn(1, ['COS 120', 'SYS 120']), '1 courses from [COS 120, SYS 120] required but not found')
+    validator.assertTrue(evaluator.nCourseNamesIn(10, ['COS 102', 'COS 121', 'COS 143', 'COS 243', 'COS 265', 'COS 284', 'COS 492', 'COS 493', 'MAT 151', 'MAT 215']), '10 courses from [COS 102, COS 121, COS 143, COS 243, COS 265, COS 284, COS 492, COS 493, MAT 151, MAT 215] required but not found')
+    validator.assertTrue(evaluator.nCourseNamesIn(1, ['COS 311', 'COS 321']), '1 courses from [COS 311, COS 321] required but not found')
+    validator.assertTrue(evaluator.nCourseNamesIn(1, ['COS 320', 'COS 382', 'COS 435']), '1 courses from [COS 320, COS 382, COS 435] required but not found')
+    validator.assertTrue(evaluator.nCourseNamesIn(1, ['COS 393', 'COS 394', 'COS 450']), '1 courses from [COS 393, COS 394, COS 450] required but not found')
+    validator.assertTrue(evaluator.nCourseNamesIn(1, ['MAT 210', 'MAT 352']), '1 courses from [MAT 210, MAT 352] required but not found')
+    validator.assertTrue((evaluator.totalCredits() >= 128.0), '128 credits (got {})'.format(evaluator.totalCredits()))
+    validator.assertTrue((evaluator.totalCreditsGreaterThanEqualToCourseNumber(300) >= 42.0), '42 upper level credits (got {})'.format(evaluator.totalCreditsGreaterThanEqualToCourseNumber(300)))
+    if (evaluator.courseName('COS 121') and (not evaluator.courseName('COS 144'))):
+        print('Entering Condition: if (COS 121 and not COS 144)')
+        validator.assertTrue(evaluator.violatesLeftBeforeRight('COS 265', 'COS 120'), 'Course COS 265 must come before course COS 120')
+        print('Closing Scope')
+    elif evaluator.courseName('COS 143'):
+        print('Entering Condition: otherwise if COS 143')
+        print('Closing Scope')
+    else:
+        print('Entering Condition: Otherwise')
+        print('Closing Scope')
+    if evaluator.contextStack.subcontext(lambda: evaluator.courseName('COS 121')):
+        print('Entering Context: when COS 121')
+        print('Closing Scope')
+
+    print()
+    print("---------------------")
+    if validator.isValid:
+        print("Valid Plan")
+    else:
+        print("Invalid Plan")
+    print("---------------------")
+    print()
+
+def scorePlan():
+    scorer = Scorer()
+    scorer.enableDiagnostics()
+
+    scorer.scoreSigmoid(evaluator.averageStartTime(), 10.0, 'Earlier classes', invert=False, worstBound=None, bestBound=None, lowerQuartile=840.0, upperQuartile=600.0)
+    scorer.scoreSigmoid(evaluator.totalCredits(), 1.0, 'at most 14 credits', invert=False, worstBound=None, bestBound=None, lowerQuartile=16.0, upperQuartile=14.0)
+    scorer.scoreSigmoid(evaluator.totalCredits(), 1.0, 'at least 15 credits', invert=False, worstBound=None, bestBound=None, lowerQuartile=13.0, upperQuartile=15.0)
+    if (evaluator.courseName('COS 121') and (not evaluator.courseName('COS 144'))):
+        print('Entering Condition: if (COS 121 and not COS 144)')
+        scorer.scoreBoolean(evaluator.nCourseNamesIn(1, ['COS 243']), 1.0, 'Taking 1 courses from [COS 243]', invert=False)
+        print('Closing Scope')
+    elif evaluator.courseName('COS 143'):
+        print('Entering Condition: otherwise if COS 143')
+        scorer.scoreBoolean(evaluator.nCourseNamesIn(1, ['COS 243']), 1.0, 'Taking 1 courses from [COS 243]', invert=False)
+        scorer.scoreBoolean(evaluator.nCourseNamesIn(1, ['COS 265']), 1.0, 'Taking 1 courses from [COS 265]', invert=False)
+        print('Closing Scope')
+    else:
+        print('Entering Condition: Otherwise')
+        print('Closing Scope')
+    if evaluator.contextStack.subcontext(lambda: evaluator.courseName('COS 121')):
+        print('Entering Context: when COS 121')
+        scorer.scoreSigmoid(evaluator.totalCourses(), 1.0, 'at most 5 courses', invert=False, worstBound=None, bestBound=None, lowerQuartile=7.0, upperQuartile=5.0)
+        scorer.scoreSigmoid(evaluator.totalCredits(), 1.0, 'at least 15 credits', invert=False, worstBound=None, bestBound=None, lowerQuartile=13.0, upperQuartile=15.0)
+        scorer.scoreSigmoid(evaluator.averageStartTime(), 1.0, 'Later classes', invert=False, worstBound=None, bestBound=None, lowerQuartile=600.0, upperQuartile=840.0)
+        print('Closing Scope')
+
+    print()
+    print("---------------------")
+    print("Final Score: {:.0f}%".format(scorer.getScore()))
+    print("---------------------")
+    print()
+
+evaluator = PlanEvaluator()
+validatePlan()
+scorePlan()
+
+~~~~
+
+This file is executed with Liz's JSON plan for example `test-data/evaluator/liz-plan.json`.
+It results in the following output:
+
+~~~~
+Requirement Violation: 10 courses from [COS 102, COS 121, COS 143, COS 243, COS 265, COS 284, COS 492, COS 493, MAT 151, MAT 215] required but not found
+Requirement Violation: 42 upper level credits (got 0)
+Entering Condition: if (COS 121 and not COS 144)
+Requirement Violation: Course COS 265 must come before course COS 120
+Closing Scope
+Entering Context: when COS 121
+Closing Scope
+
+---------------------
+Invalid Plan
+---------------------
+
+Score: 43.93%	Weight: 10.0	Preference Name: Earlier classes, Given: 746.6666666666666, Upper: 600.0, Lower: 840.0
+Score: 10.00%	Weight: 1.0	Preference Name: at most 14 credits, Given: 17, Upper: 14.0, Lower: 16.0
+Score: 96.43%	Weight: 1.0	Preference Name: at least 15 credits, Given: 17, Upper: 15.0, Lower: 13.0
+Entering Condition: if (COS 121 and not COS 144)
+Score: 0.00%	Weight: 1.0	Preference Name: Taking 1 courses from [COS 243], Given: False, Inverted: False
+Closing Scope
+Entering Context: when COS 121
+Score: 25.00%	Weight: 1.0	Preference Name: at most 5 courses, Given: 7, Upper: 5.0, Lower: 7.0
+Score: 96.43%	Weight: 1.0	Preference Name: at least 15 credits, Given: 17, Upper: 15.0, Lower: 13.0
+Score: 56.07%	Weight: 1.0	Preference Name: Later classes, Given: 746.6666666666666, Upper: 840.0, Lower: 600.0
+Closing Scope
+
+---------------------
+Final Score: 45%
+---------------------
+
+~~~~
+
+
+DSL vs GPL/Manual
+--------------
+This DSL is helpful because it allows non-programmers to be able to use it without having to learn too much about coding.
+Our purpose could certainly be accomplished with many other languages, but those other languages contain a lot of extra
+and unnecessary functionality that could bog down the user. Our DSL narrows down the information needed to be able to use
+it to the bare minimum, meaning that it is easier for a non-coder to use than a different language. Our DSL is also better
+than checking a plan by hand because it minimizes the tedium and makes some things much faster to do. For example, the total number
+of credits in a plan is obviously able to be computed by hand, but it would take a long time, while it is very easy to write code
+that computes this number for the user.
+
+Additional Functionality
+--------------
+During this milestone we added some more functionality:
+ - you can negate a requirement or preference (`require not "COS 121"`)
+ - now all the prefer statements work
+
+Splitting Up the Work
+------------------
+Liz wrote DSL vs GPL/Manual, created the non-trivial example, and added the functionality mentioned above.
+Rob wrote Documentation, implemented conditions and if/when blocks in the listener, and verified the results of the example.
+
+The breakdown of work throughout the project can be seen at the end of each previous milestone.
 
 <!--
-How do the languages compare to one another?
-Which language was your favorite?  Which was your least favorite?
-What type of problems would each language be good at solving?
-When you had a choice of language, why did you decide on the language in which you implemented your solution?
-If you worked with a partnor, how did you decide to split up the work?
-
 List any other comments below.
 Feel free to provide any feedback on how much you learned from doing the assignment, and whether you enjoyed doing it.
 -->
-
-
-
-
-
-
-<!-- THE FOLLOWING IS HERE ONLY FOR REFERENCE  -->
-<!-- DELETE THE FOLLOWING SECTION BEFORE SUBMITTING TO CANVAS -->
-<!-- VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV -->
-
-A Few Markdeep Examples
-========================
-
-I have left some examples below to demonstrate how you can format your write-up using Markdeep.
-For more details, see [http://casual-effects.com/markdeep/features.md.html](http://casual-effects.com/markdeep/features.md.html).
-Remove this section from your final submission :)
-
-
-Below is a "Hello, World!" Python program.
-You can include code (`x = 2`) in your sentences, too!
-
-~~~~
-#!/usr/bin/python
-
-print("Hello, World!")
-~~~~
-
-Below is a screenshot showing me running the program above.
-
-![A screenshot showing Python running a "Hello, World!" program.](screenshot.png width="600px")
-
-Note: included images need to be included along with the `readme.html` file.
-
-
-You can even include math ($x = 2$) in your readme.
-For larger equations, use double dollar signs!
-
-$$ f(x) = \sum_{x=0}^{100} \frac{x^2 + 1}{2x + 1} $$
-
-
-<!-- ΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛΛ -->
-
-
-
 
 
 <!--   Feel free to modify the following to fit a theme of your choosing   -->

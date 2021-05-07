@@ -1,0 +1,39 @@
+baCS {
+    require 1 of "COS 120", "SYS 120".
+    require "COS 102", "COS 121", "COS 143", "COS 243", "COS 265", "COS 284", "COS 492", "COS 493", "MAT 151", "MAT 215".
+
+    require 1 of "COS 311", "COS 321".
+    require 1 of "COS 320", "COS 382", "COS 435".
+    require 1 of "COS 393", "COS 394", "COS 450".
+    require 1 of "MAT 210", "MAT 352".
+
+    require 128 hours in plan.
+    require 42 upper division hours.
+}
+
+priorities {
+    priority GREATLY 10.
+    priority SLIGHTLY 1.
+}
+
+personal {
+    prefer GREATLY earlier classes.
+
+    prefer SLIGHTLY less credits in plan.
+    prefer SLIGHTLY more credits in plan.
+
+    if (taking "COS 121" and (not taking "COS 144")) then {
+        prefer SLIGHTLY "COS 243".
+        require taking "COS 265" before "COS 120".
+    } otherwise if taking "COS 143" then {
+        prefer SLIGHTLY "COS 243".
+    } otherwise {
+        prefer SLIGHTLY  "COS 265".
+    }
+
+    when taking "COS 121" {
+        prefer SLIGHTLY less classes in semester.
+        prefer SLIGHTLY more credits in semester.
+        prefer SLIGHTLY later classes.
+    }
+}

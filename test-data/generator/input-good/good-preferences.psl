@@ -1,0 +1,10 @@
+definitions {
+	priority strongly 10.
+	priority slightly 1.
+}
+
+studentPreferences {
+	prefer strongly "COS 121".
+	prefer strongly later classes.
+    prefer slightly not "COS 104".
+}

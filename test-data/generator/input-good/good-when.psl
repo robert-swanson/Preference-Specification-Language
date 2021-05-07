@@ -1,0 +1,10 @@
+definitions {
+	priority strongly 10.
+	priority slightly 1.
+}
+
+studentPreferences {
+	when taking "COS 381" {
+		prefer moderately less credits.
+	}
+}

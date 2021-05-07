@@ -1,0 +1,227 @@
+{
+    "$schema": "./schema-dsl-plan.json",
+    "comments": "None at all",
+    "terms": [
+        {
+            "term": "fall",
+            "term-number": 0,
+            "year": 2018,
+            "sections": [
+                {
+                    "course-name": "COS 102",
+                    "department-name": "Computer Science",
+                    "prefix": "COS",
+
+                    "course-title": "Information Technology Concepts",
+                    "course-number": 102,
+                    "description": "An introduction to the basic concepts of “system” and “process” with particular emphasis on computing systems. Major topics include systems thinking, quality, problem solving, and design.",
+                    "offering-pattern": "unknown",
+
+                    "section": 1,
+                    "type": "lecture",
+                    "credits": 3,
+                    "professors": ["B Roller"],
+                    "location": { "building": "Euler", "room-number": "201" },
+                    "num-enrolled": 10,
+                    "max-enrollment": 35,
+                    "meetings": [
+                        {
+                            "days": [ "Monday", "Wednesday", "Friday" ],
+                            "start-time": 800,
+                            "end-time": 850
+                        }
+                    ]
+                },
+                {
+                    "course-name": "COS 120",
+                    "department-name": "Computer Science",
+                    "prefix": "COS",
+
+                    "course-title": "Intro Computational Prob Solv",
+                    "course-number": 120,
+                    "description": "",
+                    "offering-pattern": "fall",
+
+                    "section": 1,
+                    "type": "lecture",
+                    "credits": 4,
+                    "professors": ["A White"],
+                    "location": { "building": "Euler", "room-number": "201" },
+                    "num-enrolled": 13,
+                    "max-enrollment": 30,
+                    "meetings": [
+                        {
+                            "days": [ "Monday", "Wednesday", "Friday" ],
+                            "start-time": 900,
+                            "end-time": 950
+                        }
+                    ]
+                },
+                {
+                    "course-name": "COS 120",
+                    "department-name": "Computer Science",
+                    "prefix": "COS",
+
+                    "course-title": "Computational Prob Solvg Lab I",
+                    "course-number": 120,
+                    "description": "",
+                    "offering-pattern": "fall",
+
+                    "section": 3,
+                    "type": "lab",
+                    "credits": 0,
+                    "professors": ["A White"],
+                    "location": { "building": "Euler", "room-number": "201" },
+                    "num-enrolled": 9,
+                    "max-enrollment": 15,
+                    "meetings": [
+                        {
+                            "days": [ "Tuesday" ],
+                            "start-time": 800,
+                            "end-time": 950
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "term": "spring",
+            "term-number": 1,
+            "year": 2019,
+            "sections": [
+                {
+                    "course-name": "COS 121",
+                    "department-name": "Computer Science",
+                    "prefix": "COS",
+
+                    "course-title": "Foundations Computer Science",
+                    "course-number": 121,
+                    "description": "",
+                    "offering-pattern": "always",
+
+                    "section": 1,
+                    "type": "lecture",
+                    "credits": 4,
+                    "professors": ["S. Brandle"],
+                    "location": { "building": "Euler", "room-number": "201" },
+                    "num-enrolled": 17,
+                    "max-enrollment": 30,
+                    "meetings": [
+                        {
+                            "days": [ "Monday", "Wednesday", "Friday" ],
+                            "start-time": 1300,
+                            "end-time": 1350
+                        }
+                    ]
+                },
+                {
+                    "course-name": "COS 121",
+                    "department-name": "Computer Science",
+                    "prefix": "COS",
+
+                    "course-title": "Foundations Computer Science",
+                    "course-number": 121,
+                    "description": "",
+                    "offering-pattern": "always",
+
+                    "section": 3,
+                    "type": "lab",
+                    "credits": 0,
+                    "professors": ["S. Brandle"],
+                    "location": { "building": "Euler", "room-number": "201" },
+                    "num-enrolled": 17,
+                    "max-enrollment": 30,
+                    "meetings": [
+                        {
+                            "days": [ "Tuesday" ],
+                            "start-time": 1400,
+                            "end-time": 1550
+                        }
+                    ]
+                },
+                {
+                    "course-name": "BIB 110",
+                    "department-name": "Biblical Studies",
+                    "prefix": "BIB",
+
+                    "course-title": "Biblical Literature I",
+                    "course-number": 110,
+                    "description": "",
+                    "offering-pattern": "always",
+
+                    "section": 2,
+                    "type": "lecture",
+                    "credits": 3,
+                    "professors": ["R. Smith"],
+                    "location": { "building": "Reade", "room-number": "210" },
+                    "num-enrolled": 0,
+                    "max-enrollment": 45,
+                    "meetings": [
+                        {
+                            "days": [ "Monday", "Wednesday", "Friday" ],
+                            "start-time": 800,
+                            "end-time": 850
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "term": "fall",
+            "term-number": 2,
+            "year": 2019,
+            "sections": [
+                {
+                    "course-name": "BIB 210",
+                    "department-name": "Biblical Studies",
+                    "prefix": "BIB",
+
+                    "course-title": "Biblical Literature II",
+                    "course-number": 210,
+                    "description": "",
+                    "offering-pattern": "always",
+
+                    "section": 2,
+                    "type": "lecture",
+                    "credits": 3,
+                    "professors": ["G. MaGee"],
+                    "location": { "building": "Reade", "room-number": "220" },
+                    "num-enrolled": 16,
+                    "max-enrollment": 45,
+                    "meetings": [
+                        {
+                            "days": [ "Monday", "Wednesday", "Friday" ],
+                            "start-time": 1100,
+                            "end-time": 1150
+                        }
+                    ]
+                },
+                {
+                    "course-name": "COS 121",
+                    "department-name": "Computer Science",
+                    "prefix": "COS",
+
+                    "course-title": "Data Structures and Algorithms",
+                    "course-number": 265,
+                    "description": "",
+                    "offering-pattern": "fall",
+
+                    "section": 1,
+                    "type": "lecture",
+                    "credits": 3,
+                    "professors": ["Denning"],
+                    "location": { "building": "Euler", "room-number": "200" },
+                    "num-enrolled": 13,
+                    "max-enrollment": 35,
+                    "meetings": [
+                        {
+                            "days": [ "Monday", "Wednesday", "Friday" ],
+                            "start-time": 1400,
+                            "end-time": 1450
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

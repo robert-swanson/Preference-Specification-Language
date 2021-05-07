@@ -1,0 +1,52 @@
+definitions {
+	priority strongly 10.
+	priority moderately 5.
+	priority slightly 1.
+}
+
+computerScienceBSRequirements {
+	require "COS 102".
+	require not "COS 103".
+	require "COS 120".
+	require "COS 121", "COS 333".
+
+	require 1 of "COS 311", "COS 321".
+	require 2 of "COS 381", "COS 421", "COS 436".
+
+	require 128 hours in plan.
+	require 42 upper division credits.
+
+	require taking "COS 120" before "COS 121".
+}
+
+studentPreferences {
+	prefer moderately "COS 999".
+	prefer moderately later classes.
+	
+	if taking "COS 436" then {
+		prefer slightly "COS 381".
+		prefer slightly not  "COS 421".
+	} otherwise {
+		prefer slightly not  "COS 421".
+	}
+
+	when taking "COS 381" {
+		prefer moderately less credits in semester.
+	}
+
+	when (taking "COS 381" and taking "COS 333") {
+    		prefer moderately less credits in semester.
+    }
+
+    when ((taking "COS 381" or taking "MAT 215") and taking "COS 121") {
+    		prefer moderately less credits in semester.
+    }
+
+    when (taking "COS 381" or (taking "MAT 215" and taking "COS 121")) {
+            prefer moderately less credits in semester.
+    }
+
+	require "COS 121".
+	require not "COS 121".
+	prefer moderately "COS 121".
+}
