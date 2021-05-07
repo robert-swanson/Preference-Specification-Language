@@ -24,30 +24,30 @@ public class RequirementGenerator {
 
     public static RequirementGenerator assertEquals(String value, String expected, String message, boolean invert) {
         if (invert) return assertNotEquals(value, expected, message, false);
-        return new RequirementGenerator(String.format("validator.assertEquals(%s, %s, '%s')", value, expected, message));
+        return new RequirementGenerator(String.format("validator.assertEquals(%s, %s, '%s (got {})'.format(%s))", value, expected, message, value));
     }
     public static RequirementGenerator assertNotEquals(String value, String invalid, String message, boolean invert) {
         if (invert) return assertEquals(value, invalid, message, false);
-        return new RequirementGenerator(String.format("validator.assertTrue(%s != %s, '%s')", value, invalid, message));
+        return new RequirementGenerator(String.format("validator.assertTrue(%s != %s, '%s (got {})'.format(%s))", value, invalid, message, value));
     }
 
     public static RequirementGenerator assertGreaterThanEqual(String value, String min, String message, boolean invert) {
         if (invert) return assertLessThan(value, min, message, false);
-        return new RequirementGenerator(String.format("validator.assertTrue((%s >= %s), '%s')", value, min, message));
+        return new RequirementGenerator(String.format("validator.assertTrue((%s >= %s), '%s (got {})'.format(%s))", value, min, message, value));
     }
 
     public static RequirementGenerator assertLessThanEqual(String value, String max, String message, boolean invert) {
         if (invert) return assertGreaterThan(value, max, message, false);
-        return new RequirementGenerator(String.format("validator.assertTrue((%s <= %s), '%s')", value, max, message));
+        return new RequirementGenerator(String.format("validator.assertTrue((%s <= %s), '%s (got {})'.format(%s)", value, max, message, value));
     }
 
     public static RequirementGenerator assertGreaterThan(String value, String min, String message, boolean invert) {
         if (invert) return assertLessThanEqual(value, min, message, false);
-        return new RequirementGenerator(String.format("validator.assertTrue((%s > %s), '%s')", value, min, message));
+        return new RequirementGenerator(String.format("validator.assertTrue((%s > %s), '%s (got {})'.format(%s)", value, min, message, value));
     }
 
     public static RequirementGenerator assertLessThan(String value, String max, String message, boolean invert) {
         if (invert) return assertGreaterThanEqual(value, max, message, false);
-        return new RequirementGenerator(String.format("validator.assertTrue((%s < %s), '%s')", value, max, message));
+        return new RequirementGenerator(String.format("validator.assertTrue((%s < %s), '%s (got {})'.format(%s)", value, max, message, value));
     }
 }

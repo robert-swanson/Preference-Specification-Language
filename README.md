@@ -107,7 +107,7 @@ Prefer statements are able to operate on any kind of constraint. Constraints tha
 
 The `credits` and `hours` tokens are always equivalent in meaning.
 
-When required, this constraint indicates that the given number of credit hours exist in the current context. If this constraint is required, it makes no functional difference whether the `plan` token or the `semester` token is used.
+When required, this constraint indicates that at least the given number of credit hours exist in the current context. If this constraint is required, it makes no functional difference whether the `plan` token or the `semester` token is used.
 
 When preferred, this constraint utilizes a optimization function centered at the provided value, and who’s deviance is controlled by whether the `plan` or `semester` tokens were used. This has the effect of providing a 100% score when there are the exact right number of credits, with a decreasing score as the number of credits deviates from the optimum.
 
@@ -187,18 +187,14 @@ This constraint is scored with a sigmoid function operating on the number of cou
 
 - `semester`
   - `more`
-    - Lower Bound: Soft, 3
-    - Upper Bound: Soft, 6
+    - Greater Equal To 6, Deviance 2
   - `less`
-    - Lower Bound: Soft, 6
-    - Upper Bound: Soft, 3
+    - Less Than Equal to 5, Deviance 2
 - `plan`
   - `more`
-    - Lower Bound: Soft, 24
-    - Upper Bound: Soft, 48
+    - Greater Equal To 48, Deviance 16
   - `less`
-    - Lower Bound: Soft, 48
-    - Upper Bound: Soft, 24
+    - Less Than Equal to 40, Deviance 16
 
 #### More/Less Credits
 
@@ -217,18 +213,16 @@ This constraint is scored with a sigmoid function operating on the number of cre
 
 - `semester`
   - `more`
-    - Lower Bound: Soft, 13
-    - Upper Bound: Soft, 17
+    - Greater Equal To 15, Deviance 2
   - `less`
-    - Lower Bound: Soft, 17
-    - Upper Bound: Soft, 13
+    - Less Than Equal to 14, Deviance 2
 - `plan`
   - `more`
-    - Lower Bound: Soft, 104
-    - Upper Bound: Soft, 136
+    - Greater Equal To 145, Deviance 16
   - `less`
-    - Lower Bound: Soft, 136
-    - Upper Bound: Soft, 104
+    - Less Than Equal to 144, Deviance 16
+
+#### 
 
 ## Conditions
 
@@ -269,7 +263,7 @@ Boolean functions are the simplest of all, and are used to score constraints for
 
 $b(x)=\begin{cases} 0 & x \le0 \\ 1 & x > 0 \end{cases}$
 
-<img src="/Users/robertswanson/dev/dsl/images/boolean-function.png" alt="boolean-function" style="zoom:50%;" />
+<img src="images/boolean-function.png" alt="boolean-function" style="zoom:50%;" />
 
 It should only be passed values of either 0 or 1, but if it is passed anything else it behaves as demonstrated by the following graph, who’s y axis shows the value of $b(x)$ and who’s x-axis shows the value for $x$.
 
@@ -279,7 +273,7 @@ Sigmoid functions are used to score constraints for preferences in which the use
 
 $s(x) = \frac 1 {1+9^{-x}}$
 
-<img src="/Users/robertswanson/dev/dsl/images/sigmoid-function.png" alt="sigmoid-function" style="zoom: 50%;" />
+<img src="images/sigmoid-function.png" alt="sigmoid-function" style="zoom: 50%;" />
 
 <small>[Desmos Link](https://www.desmos.com/calculator/onubzwbhmm)</small>
 
@@ -293,7 +287,7 @@ $o(x)=(\frac 1 4)^{x^2}$
 
 
 
-<img src="/Users/robertswanson/dev/dsl/images/optimal-function.png" alt="optimal-function" style="zoom:50%;" />
+<img src="images/optimal-function.png" alt="optimal-function" style="zoom:50%;" />
 
 <small>[Desmos Link](https://www.desmos.com/calculator/7zenmoxx18)</small>
 
@@ -311,7 +305,7 @@ A sigmoid function using a hard bound becomes a bounded linear function.
 
 $l(x)=\begin{cases} x & -1 \le x \le 1 \\ 0 & x < -1 \\ 1 & x > 1\end{cases}$
 
-<img src="/Users/robertswanson/dev/dsl/images/linear-function.png" alt="linear-function" style="zoom:50%;" />
+<img src="images/linear-function.png" alt="linear-function" style="zoom:50%;" />
 
 #### Hard Bound: Optimal
 
@@ -319,7 +313,7 @@ A optimal function using a hard bound becomes a bounded upside-down quadratic fu
 
 $f(x)=\begin{cases} -x^2+1 & |x| \le 1 \\ 0 & |x| > 1 \end{cases}$
 
-<img src="/Users/robertswanson/dev/dsl/images/square-function.png" alt="square-function" style="zoom:50%;" />
+<img src="images/square-function.png" alt="square-function" style="zoom:50%;" />
 
 ### Normalization
 
@@ -339,5 +333,5 @@ This equations defines a optimum point at $m$ (mean) and the left and right quar
 
 With the combination of hard and soft bounds, each which can be provided their own parameters, it is possible to use different types of bounds for the two different points of a function. For example, this shows a optimum function where the optimum is 0.5, the left bound is a hard bound with a deviance of 2, and the right soft bound with deviance of 0.5.
 
-<img src="/Users/robertswanson/dev/dsl/images/bounded-function.png" alt="bounded-function" style="zoom:50%;" />
+<img src="images/bounded-function.png" alt="bounded-function" style="zoom:50%;" />
 

@@ -17,15 +17,13 @@ public class listener extends PSLGrammarBaseListener {
     Hashtable<String, Integer> priorities = new Hashtable<>();
     String[] nameList;
     boolean rConstraintPreference = false;
-
+    public static String outputPath;
 
     @Override public void enterStart(PSLGrammarParser.StartContext ctx) {
-//        System.out.print("here");
     }
 
     @Override public void exitStart(PSLGrammarParser.StartContext ctx) throws IOException{
-//        System.out.print("hereeee");
-        PythonGenerator.generate("test-data/generator/output/generated.py"); // <-- Generation
+        PythonGenerator.generate(outputPath); // <-- Generation
     }
 
 
@@ -131,16 +129,16 @@ public class listener extends PSLGrammarBaseListener {
                 }
                 constraint = Constraint.nCourseNames(number, list, not);
             } else if (ctx.UPPER() != null) { //  NUM UPPER DIVISION credit_hours
-                constraint = Constraint.equalTo(EvaluatorGenerator.totalCreditsGreaterThanEqualToCourseNumber(300),
-                        number, 0, not, String.format("%d credits", number));
+                constraint = Constraint.greaterThanOrEqualTo(EvaluatorGenerator.totalCreditsGreaterThanEqualToCourseNumber(300),
+                        number, 1, not, String.format("%d upper level credits", number));
             } else { //  NUM credit_hours
-                constraint = Constraint.equalTo(EvaluatorGenerator.totalCredits(), number, 0, not,
+                constraint = Constraint.greaterThanOrEqualTo(EvaluatorGenerator.totalCredits(), number, 1, not,
                         String.format("%d credits", number));
             }
         } else if (ctx.TAKING() != null) { // TAKING courseNameList BEFORE courseName
             constraint = Constraint.leftBeforeRight(  // only works well with one course in list, maybe loop over children?
-                    ctx.courseNameList().getChild(0).toString().replaceAll("(\")", ""),
-                    ctx.courseName().getChild(0).toString().replaceAll("\"", ""),
+                    ctx.courseNameList().getChild(1).toString().replaceAll("(\")", ""),
+                    ctx.courseName().getChild(1).toString().replaceAll("\"", ""),
                     not
             );
         } else {
@@ -199,7 +197,7 @@ public class listener extends PSLGrammarBaseListener {
                 );
             } else {
                 constraint = Constraint.lessThanOrEqualTo(
-                        EvaluatorGenerator.totalCredits(), 14, 0.1, not, "at most 14 credits"
+                        EvaluatorGenerator.totalCredits(), 14, 1, not, "at most 14 credits"
                 );
             }
         }
@@ -248,7 +246,9 @@ public class listener extends PSLGrammarBaseListener {
 
 
     static public void main(String[] args) throws Exception {
-        CharStream input = CharStreams.fromFileName("test-data/generator/input-good/good-integrated.psl");
+        CharStream input = CharStreams.fromFileName(args[0]);
+        listener.outputPath = args[1];
+
         PSLGrammarLexer lexer = new PSLGrammarLexer(input);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         PSLGrammarParser parser = new PSLGrammarParser(tokens);
@@ -257,6 +257,5 @@ public class listener extends PSLGrammarBaseListener {
         parser.addParseListener(myListener);
 
         parser.start();
-
     }
 }

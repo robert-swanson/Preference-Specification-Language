@@ -12,7 +12,7 @@ class Scorer:
         score = 1 if value ^ invert else 0
 
         if self.diagnostics:
-            print("Score: {:.2f}%\tWeight: {}\tPreference Name: {}, Given: {}, Inverted: {}".format(score*100, weight, preferenceName, value, invert))
+            print("Score: {:.2f}%\tWeight: {}\tPreference Name: {}{}, Given: {}, Inverted: {}".format(score*100, weight, "not " if invert else "", preferenceName, value, invert))
 
         self.score += score * weight
         return score
@@ -70,7 +70,7 @@ class Scorer:
             score = 1-score
 
         if self.diagnostics:
-            print("Score: {:.2f}%\tWeight: {}\tPreference Name: {}, Given: {}, Optimum: {} Inverted: {}".format(score*100, weight, preferenceName, value, optimum, invert))
+            print("Score: {:.2f}%\tWeight: {}\tPreference Name: {}{}, Given: {}, Optimum: {} Inverted: {}".format(score*100, weight, "not " if invert else "", preferenceName, value, optimum, invert))
 
         self.maxPossibleScore += weight
         self.score += score * weight
@@ -102,7 +102,7 @@ class Scorer:
             score = 1-score
 
         if self.diagnostics:
-            print("Score: {:.2f}%\tWeight: {}\tPreference Name: {}, Given: {}, Upper: {}, Lower: {}".format(score*100, weight, preferenceName, value, upper, lower))
+            print("Score: {:.2f}%\tWeight: {}\tPreference Name: {}{}, Given: {}, Upper: {}, Lower: {}".format(score*100, weight, "not " if invert else "", preferenceName, value, upper, lower))
             # print("Score: {:.2f}\tCurrent: {:.0f} (given: val={}, weight={}, worst={}, best={})".format(score, self.getScore(), value, weight, worstBound, bestBound))
 
         self.maxPossibleScore += weight
