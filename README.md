@@ -2,6 +2,20 @@
 
 *Liz Yeiter & Robert Swanson*
 
+- [Blocks](#blocks)
+- [Statements](#statements)
+- [Constraints](#constraints)
+	- [Requirable Constraints](#requirable-constraints)
+	- [Non-requirable Constraints](#non-requirable-constraints)
+- [Scoring](#scoring)
+	- [Boolean](#boolean)
+	- [Sigmoid](#sigmoid)
+	- [Optimal](#optimal)
+	- [Bounds](#bounds)
+	- [Normalization](#normalization)
+
+
+
 This project defines a domain specific language (DSL) called PSL (preference specification language) to describe a set of requirements and preferences for a college student’s four year plan. A PSL file is translated by the PSL parser into a python file that evaluates a plan (encoded using JSON) according to the preferences and requirements defined. The data flow is diagramed below:
 
 <img src="images/flowchart.png" alt="flowchart" style="zoom: 67%;" />
@@ -222,8 +236,6 @@ This constraint is scored with a sigmoid function operating on the number of cre
   - `less`
     - Less Than Equal to 144, Deviance 16
 
-#### 
-
 ## Conditions
 
 Conditions are passed into `if` and `when` statements to perform an evaluation on a particular context. Currently we only support conditions based on the existence of a course in a plan.
@@ -334,4 +346,3 @@ This equations defines a optimum point at $m$ (mean) and the left and right quar
 With the combination of hard and soft bounds, each which can be provided their own parameters, it is possible to use different types of bounds for the two different points of a function. For example, this shows a optimum function where the optimum is 0.5, the left bound is a hard bound with a deviance of 2, and the right soft bound with deviance of 0.5.
 
 <img src="images/bounded-function.png" alt="bounded-function" style="zoom:50%;" />
-

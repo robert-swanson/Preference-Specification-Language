@@ -27,9 +27,9 @@ public class ExampleGeneration {
         Constraint earlierClasses = Constraint.earlierClasses(invert);
         Constraint laterClasses = Constraint.laterClasses(invert);
 
-        Condition cos120Condition = new Condition(EvaluatorGenerator.courseNameIn("COS 120"));
-        Condition cos121Condition = new Condition(EvaluatorGenerator.courseNameIn("COS 121"));
-        Condition cos143Condition = new Condition(EvaluatorGenerator.courseNameIn("COS 143"));
+        Condition cos120Condition = new Condition(EvaluatorGenerator.courseNameIn("COS 120"),"");
+        Condition cos121Condition = new Condition(EvaluatorGenerator.courseNameIn("COS 121"),"");
+        Condition cos143Condition = new Condition(EvaluatorGenerator.courseNameIn("COS 143"),"");
         Condition combinedCondition = cos120Condition.and(cos121Condition.or(cos143Condition));
         Scope ifBlock = Scope.ifBlock(combinedCondition, "COS 120 and one of COS 121 or COS 143");
         Scope whenBlock = Scope.whenBlock(combinedCondition, "COS 120 and one of COS 121 or COS 143");

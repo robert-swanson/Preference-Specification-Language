@@ -29,6 +29,7 @@ public class listener extends PSLGrammarBaseListener {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        System.out.println("Done");
     }
 
 
@@ -73,11 +74,9 @@ public class listener extends PSLGrammarBaseListener {
 
 
     @Override public void enterIf_(PSLGrammarParser.If_Context ctx) {
-        System.out.println("Entering IF");
     }
 
     @Override public void exitIf_(PSLGrammarParser.If_Context ctx) {
-        System.out.println("Exiting IF");
         scopeStack.pop().close();
         // clear stack seen in condition
 
@@ -100,14 +99,12 @@ public class listener extends PSLGrammarBaseListener {
         Scope scope = Scope.otherwiseBlock("Otherwise");
         scope.open();
         scopeStack.push(scope);
-        System.out.println("Done Otherwise");
     }
 
 
     @Override public void enterWhen(PSLGrammarParser.WhenContext ctx) { }
 
     @Override public void exitWhen(PSLGrammarParser.WhenContext ctx) {
-        System.out.println("Exiting When");
         scopeStack.pop().close();
     }
 
@@ -119,38 +116,32 @@ public class listener extends PSLGrammarBaseListener {
     @Override public void exitCondition(PSLGrammarParser.ConditionContext ctx) {
         if (ctx.TAKING() != null) {
             String course = ctx.STRING().toString();
-            conditionStack.push(new Condition(EvaluatorGenerator.courseNameIn(course.substring(1,course.length()-1))));
-            System.out.println(ctx.STRING());
+            course = course.substring(1,course.length()-1);
+            conditionStack.push(new Condition(EvaluatorGenerator.courseNameIn(course), course));
         } else if (ctx.AND() != null) {
-            System.out.println("AND");
             conditionStack.push(conditionStack.pop().and(conditionStack.pop()));
         } else if (ctx.OR() != null) {
-            System.out.println("OR");
             conditionStack.push(conditionStack.pop().or(conditionStack.pop()));
         } else if (ctx.NOT() != null) {
-            System.out.println("NOT");
             conditionStack.push(conditionStack.pop().not());
         }
         if (ctx.parent instanceof PSLGrammarParser.If_Context) {
             Condition condition = conditionStack.pop();
-            Scope scope = Scope.ifBlock(condition, "If Condition");
+            Scope scope = Scope.ifBlock(condition, String.format("if %s", condition.getDescription()));
             scopeStack.push(scope);
             scope.open();
-            System.out.println("Done If");
         } else if (ctx.parent instanceof PSLGrammarParser.OtherwiseIfContext) {
             scopeStack.pop().close();
 
             Condition condition = conditionStack.pop();
-            Scope scope = Scope.otherwiseIfBlock(condition, "Otherwise If");
+            Scope scope = Scope.otherwiseIfBlock(condition, String.format("otherwise if %s", condition.getDescription()));
             scopeStack.push(scope);
             scope.open();
-            System.out.println("Done Otherwise If");
         } else if (ctx.parent instanceof PSLGrammarParser.WhenContext) {
             Condition condition = conditionStack.pop();
-            Scope scope = Scope.whenBlock(condition, "When Condition");
+            Scope scope = Scope.whenBlock(condition, String.format("when %s", condition.getDescription()));
             scopeStack.push(scope);
             scope.open();
-            System.out.println("Done When");
         }
     }
 
@@ -200,8 +191,8 @@ public class listener extends PSLGrammarBaseListener {
             }
         } else if (ctx.TAKING() != null) { // TAKING courseNameList BEFORE courseName
             constraint = Constraint.leftBeforeRight(  // only works well with one course in list, maybe loop over children?
-                    ctx.courseNameList().getChild(1).toString().replaceAll("(\")", ""),
-                    ctx.courseName().getChild(1).toString().replaceAll("\"", ""),
+                    ctx.courseNameList().getChild(0).toString().replaceAll("(\")", ""),
+                    ctx.courseName().getChild(0).toString().replaceAll("\"", ""),
                     not
             );
         } else {
